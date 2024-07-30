@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý người dùng - Hệ thống bán khóa học</title>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/users.css" />
+  </head>
+  <body>
+    <div id="header"></div>
+    <div class="container">
+      <div id="sidebar"></div>
+      <main>
+        <h2>Quản lý người dùng</h2>
+        <button id="add-user-btn">Thêm người dùng mới</button>
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tên đăng nhập</th>
+              <th>Email</th>
+              <th>Họ tên</th>
+              <th>Ảnh đại diện</th>
+              <th>Ngày tạo</th>
+              <th>Vai trò</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dữ liệu người dùng sẽ được thêm vào đây bằng JavaScript -->
+          </tbody>
+        </table>
+      </main>
+    </div>
+    <div id="footer"></div>
+
+    <!-- Modal thêm người dùng hoặc chỉnh sửa người dùng -->
+    <div id="user-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2 id="modal-title">Thêm người dùng mới</h2>
+        <form id="user-form">
+          <input type="hidden" id="userId" />
+
+          <label for="username">Tên đăng nhập:</label>
+          <input type="text" id="username" name="username" required />
+
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="password">Mật khẩu:</label>
+          <input type="password" id="password" name="password" />
+
+          <label for="fullName">Họ tên:</label>
+          <input type="text" id="fullName" name="fullName" />
+
+          <label for="profilePictureInput">Ảnh đại diện:</label>
+          <input type="text" id="profilePicture" />
+         
+          <!-- <input
+            type="file"
+            id="profilePictureInput"
+            name="profilePicture"
+            accept="image/*"
+          />
+          <img
+            id="profilePicturePreview"
+            src="../../shared/assets/img/default-avatar.jpg"
+            alt="Ảnh đại diện"
+            width="100"
+          /> -->
+
+          <label for="role">Vai trò:</label>
+          <select id="role" name="role">
+            <option value="user">Người dùng</option>
+            <option value="admin">Quản trị viên</option>
+          </select>
+
+          <button type="submit">Lưu</button>
+        </form>
+      </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/users.js" type="module"></script>
+  </body>
+</html>
