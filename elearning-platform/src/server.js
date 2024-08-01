@@ -5,8 +5,11 @@ const cors = require('cors');
 // const enrollmentRoutes = require('./routes/enrollments');
 // const reviewRoutes = require('./routes/reviews');
 const adminRoutes = require('./routes/admin');
+
 const path = require('path');
 const db = require('./config/db');
+
+const bodyParser = require('body-parser');
 
 // const router = express.Router();
 // const adminController = require('./controllers/adminController');
@@ -20,12 +23,26 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Import routes
+const courseRoutes = require('./routes/course');
+const sectionRoutes = require('./routes/section');
+const lessonRoutes = require('./routes/lesson');
 
 
+// Middleware
 app.use(cors());
+app.use(bodyParser.json());
+
 app.use(express.json());
 
+
+
 app.use('/api/admin', adminRoutes);
+
+//Routes
+app.use('/api/courses', courseRoutes);
+app.use('/api/sections', sectionRoutes);
+app.use('/api/lessons', lessonRoutes);
 
 // app.use('/api/auth', authRoutes);
 // app.use('/api/courses', courseRoutes);
@@ -35,20 +52,21 @@ app.use('/api/admin', adminRoutes);
 
 
 // Phục vụ các file tĩnh từ thư mục frontend
+// Serve static files from frontend
 app.use(express.static(path.join(__dirname, '../../frontend')));
 
-app.use('/assets', express.static(path.join(__dirname, '../assets')));
+// Serve static files from assets
+app.use('/assets', express.static(path.join(__dirname, '../../assets')));
 
-// Route cho trang admin
+// Route for admin page
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/admin/index.html'));
 });
 
-// Route mặc định cho client
+// Route for client page
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../../frontend/client/index.html'));
 });
-
 
 
 

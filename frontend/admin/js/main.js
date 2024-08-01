@@ -1,3 +1,4 @@
+
 async function includeHTML() {
     const elements = ['header', 'sidebar', 'footer'];
     for (const element of elements) {

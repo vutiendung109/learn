@@ -3,36 +3,38 @@
 const db = require('../config/db');
 
 class Course {
-  static async create(title, description, instructorId, price) {
+  static async create(course) {
     const [result] = await db.execute(
-      'INSERT INTO courses (title, description, instructor_id, price) VALUES (?, ?, ?, ?)',
-      [title, description, instructorId, price]
+        `INSERT INTO courses (title, description, content, regular_price, discounted_price, discount_start_date, discount_end_date, image_url) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url]
     );
     return result.insertId;
-  }
+}
 
-  static async findById(id) {
-    const [rows] = await db.execute('SELECT * FROM courses WHERE course_id = ?', [id]);
-    return rows[0];
-  }
-
-  static async getAll() {
+static async getAll() {
     const [rows] = await db.execute('SELECT * FROM courses');
     return rows;
-  }
+}
 
-  static async update(id, title, description, price) {
+static async getById(course_id) {
+    const [rows] = await db.execute('SELECT * FROM courses WHERE course_id = ?', [course_id]);
+    return rows[0];
+}
+
+static async update(course_id, course) {
     await db.execute(
-      'UPDATE courses SET title = ?, description = ?, price = ? WHERE course_id = ?',
-      [title, description, price, id]
+        `UPDATE courses SET title = ?, description = ?, content = ?, regular_price = ?, discounted_price = ?, discount_start_date = ?, discount_end_date = ?, image_url = ? 
+         WHERE course_id = ?`,
+        [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url, course_id]
     );
-  }
+}
 
-  static async delete(id) {
-    await db.execute('DELETE FROM courses WHERE course_id = ?', [id]);
-  }
+static async delete(course_id) {
+    await db.execute('DELETE FROM courses WHERE course_id = ?', [course_id]);
+}
 
-  //4.5 tìm kiếm , lọc khoá học
+  // phần này cần xem lại 4.5 tìm kiếm , lọc khoá học
   static async search(query, filters = {}) {
     let sql = 'SELECT * FROM courses WHERE 1=1';
     const params = [];

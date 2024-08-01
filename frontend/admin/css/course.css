@@ -1,0 +1,244 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+}
+
+#header {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+
+#sidebar {
+    width: 200px;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+main {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+#footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Styles for sidebar navigation */
+#sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    margin-bottom: 10px;
+}
+
+#sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+#sidebar ul li a:hover {
+    color: #0066cc;
+}
+
+/* Additional styles for better visual hierarchy */
+h1 {
+    margin: 0;
+}
+
+h2 {
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+/* Specific Styles for Course Management */
+#courses-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#courses-table th, #courses-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#courses-table th {
+    background-color: #f4f4f4;
+}
+
+#courses-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#courses-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+#add-course-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+}
+
+#add-course-btn:hover {
+    background-color: #45a049;
+}
+
+button {
+    background-color: #008CBA;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #007B9E;
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Sections and Lessons Page */
+#sections-lessons-page {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8); /* Semi-transparent background */
+}
+
+#sections-lessons-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    border-radius: 10px;
+}
+
+#sections-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#sections-table th, #sections-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#sections-table th {
+    background-color: #f4f4f4;
+}
+
+#sections-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#sections-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+#add-section-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+}
+
+#add-section-btn:hover {
+    background-color: #45a049;
+}
+
+#sections-table .lesson-row {
+    background-color: #e9f7df;
+}
+
+#sections-table .lesson-row td {
+    padding-left: 30px; /* Indentation for lessons */
+}
+
+#add-lesson-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+#add-lesson-btn:hover {
+    background-color: #45a049;
+}
+
+/* Modals for Sections and Lessons */
+#section-modal .modal-content, #lesson-modal .modal-content {
+    margin-top: 10%;
+    width: 70%;
+}
+
+#section-modal h2, #lesson-modal h2 {
+    margin-top: 0;
+}
