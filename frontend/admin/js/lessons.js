@@ -1,119 +1,104 @@
 import { api } from './api.js';
 
-async function loadLessons(sectionId) {
+export async function loadLessons(sectionId) {
     try {
         const lessons = await api.getLessons(sectionId);
-        const tableBody = document.querySelector('#lessons-table tbody');
-        tableBody.innerHTML = lessons.map(lesson => `
-            <tr>
-                <td>${lesson.lesson_id}</td>
-                <td>${lesson.title}</td>
-                <td>${lesson.summary}</td>
-                <td>${lesson.video_url}</td>
-                <td>
-                    <button class="action-btn edit-lesson" data-id="${lesson.lesson_id}">Edit</button>
-                    <button class="action-btn delete-lesson" data-id="${lesson.lesson_id}">Delete</button>
-                </td>
-            </tr>
+        const sectionContent = document.querySelector(`.section[data-id="${sectionId}"] .section-content`);
+        sectionContent.innerHTML = lessons.map(lesson => `
+            <div class="lesson" data-id="${lesson.lesson_id}">
+                <div class="lesson-header">
+                    <span class="lesson-title">${lesson.title}</span>
+                    <div class="lesson-actions">
+                        <button class="btn edit-lesson-btn">Edit</button>
+                        <button class="btn delete-lesson-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
         `).join('');
+
+        addLessonEventListeners();
     } catch (error) {
         console.error('Error loading lessons:', error);
     }
 }
 
-function handleAddLesson(sectionId) {
-    const lessonForm = document.querySelector('#lesson-form');
-    lessonForm.reset();
-    lessonForm.sectionId.value = sectionId;
-    document.querySelector('#lesson-modal-title').innerText = 'Add New Lesson';
-    document.querySelector('#lesson-modal').style.display = 'block';
+function addLessonEventListeners() {
+    document.querySelectorAll('.edit-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const lessonId = e.target.closest('.lesson').dataset.id;
+            openLessonModal(lessonId);
+        });
+    });
+    document.querySelectorAll('.delete-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const lessonId = e.target.closest('.lesson').dataset.id;
+            deleteLesson(lessonId);
+        });
+    });
 }
 
-async function handleSaveLesson(event) {
-    event.preventDefault();
-    const form = event.target;
-    const data = {
-        title: form.lessonTitle.value,
-        summary: form.lessonSummary.value,
-        videoUrl: form.lessonVideoUrl.value,
-    };
+export function openLessonModal(lessonId = null, sectionId = null) {
+    const modal = document.getElementById('lesson-modal');
+    const form = document.getElementById('lesson-form');
+    const title = document.getElementById('lesson-modal-title');
 
-    try {
-        const lessonId = form.lessonId.value;
-        const sectionId = form.sectionId.value;
-        if (lessonId) {
-            await api.updateLesson(lessonId, data);
-        } else {
-            await api.createLesson(sectionId, data);
-        }
-        document.querySelector('#lesson-modal').style.display = 'none';
-        await loadLessons(sectionId);
-    } catch (error) {
-        console.error('Error saving lesson:', error);
+    form.reset();
+    form.dataset.id = lessonId || '';
+    form.dataset.sectionId = sectionId || '';
+    title.textContent = lessonId ? 'Edit Lesson' : 'Add New Lesson';
+
+    if (lessonId) {
+        api.getLesson(lessonId).then(lesson => {
+            document.getElementById('lessonTitle').value = lesson.title;
+            document.getElementById('lessonSummary').value = lesson.summary;
+            document.getElementById('lessonVideoUrl').value = lesson.video_url;
+        }).catch(error => console.error('Error loading lesson data:', error));
     }
+
+    modal.style.display = 'flex';
 }
 
-async function handleEditLesson(lessonId) {
-    try {
-        const lesson = await api.getLesson(lessonId);
-        const form = document.querySelector('#lesson-form');
-        form.lessonId.value = lesson.lesson_id;
-        form.lessonTitle.value = lesson.title;
-        form.lessonSummary.value = lesson.summary;
-        form.lessonVideoUrl.value = lesson.video_url;
-        document.querySelector('#lesson-modal-title').innerText = 'Edit Lesson';
-        document.querySelector('#lesson-modal').style.display = 'block';
-    } catch (error) {
-        console.error('Error editing lesson:', error);
+async function deleteLesson(lessonId) {
+    if (!lessonId) {
+        console.error('Lesson ID is undefined');
+        return;
     }
-}
-
-async function handleDeleteLesson(lessonId) {
     if (confirm('Are you sure you want to delete this lesson?')) {
         try {
             await api.deleteLesson(lessonId);
-            const sectionId = document.querySelector('#lesson-form').sectionId.value;
-            await loadLessons(sectionId);
+            const sectionId = document.querySelector(`.lesson[data-id="${lessonId}"]`).closest('.section').dataset.id;
+            loadLessons(sectionId);
         } catch (error) {
             console.error('Error deleting lesson:', error);
         }
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const addLessonBtn = document.querySelector('#add-lesson-btn');
-    if (addLessonBtn) {
-        addLessonBtn.addEventListener('click', () => {
-            const sectionId = document.querySelector('#lesson-form').sectionId.value;
-            handleAddLesson(sectionId);
-        });
-    }
-    
-    const lessonForm = document.querySelector('#lesson-form');
-    if (lessonForm) {
-        lessonForm.addEventListener('submit', handleSaveLesson);
-    }
+export async function saveLesson() {
+    const form = document.getElementById('lesson-form');
+    const lessonId = form.dataset.id;
+    const sectionId = form.dataset.sectionId || document.querySelector('.section.expanded').dataset.id;
+    const lesson = {
+        section_id: sectionId,
+        title: document.getElementById('lessonTitle').value,
+        summary: document.getElementById('lessonSummary').value,
+        video_url: document.getElementById('lessonVideoUrl').value,
+    };
 
-    const lessonsList = document.querySelector('#lessons-list');
-    if (lessonsList) {
-        lessonsList.addEventListener('click', async (event) => {
-            const target = event.target;
-            const lessonId = target.getAttribute('data-id');
-
-            if (target.classList.contains('edit-lesson')) {
-                await handleEditLesson(lessonId);
-            } else if (target.classList.contains('delete-lesson')) {
-                await handleDeleteLesson(lessonId);
-            }
-        });
+    try {
+        if (lessonId) {
+            await api.updateLesson(lessonId, lesson);
+        } else {
+            await api.createLesson(lesson);
+        }
+        document.getElementById('lesson-modal').style.display = 'none';
+        loadLessons(sectionId);
+    } catch (error) {
+        console.error('Error saving lesson:', error);
     }
+}
 
-    const closeLessonModalBtn = document.querySelector('#lesson-modal .close-btn');
-    if (closeLessonModalBtn) {
-        closeLessonModalBtn.addEventListener('click', () => {
-            document.querySelector('#lesson-modal').style.display = 'none';
-        });
-    }
+document.getElementById('lesson-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveLesson();
 });
-
-export { loadLessons };

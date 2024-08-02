@@ -6,6 +6,83 @@
     <title>Course Content</title>
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/course-content.css">
+    <style>
+        .section {
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .section-header {
+            background-color: #f5f5f5;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-title {
+            font-weight: bold;
+        }
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .section-content {
+            padding: 10px;
+            display: none;
+        }
+        .lesson {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 3px;
+        }
+        .lesson-actions {
+            float: right;
+        }
+        .add-lesson-btn {
+            margin-top: 10px;
+        }
+        .expanded .section-content {
+            display: block;
+        }
+        .btn {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+        }
+        .close-btn {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div id="header"></div>
@@ -14,11 +91,8 @@
         <main>
             <h1>Course Content</h1>
             <h2 id="course-title">Course Title: <span id="course-name"></span></h2>
-            <button id="add-section-btn">Add New Section</button>
-            
-            <div id="course-outline">
-                <!-- Sections and lessons will be dynamically added here -->
-            </div>
+            <button id="add-section-btn" class="btn">Add New Section</button>
+            <div id="course-outline"></div>
         </main>
 
         <!-- Modal for Add/Edit Section -->
@@ -32,7 +106,7 @@
                     <input type="text" id="sectionTitle" name="sectionTitle" required>
                     <label for="sectionDescription">Description:</label>
                     <textarea id="sectionDescription" name="sectionDescription"></textarea>
-                    <button type="submit">Save</button>
+                    <button type="submit" class="btn">Save</button>
                 </form>
             </div>
         </div>
@@ -44,24 +118,23 @@
                 <h2 id="lesson-modal-title">Add New Lesson</h2>
                 <form id="lesson-form">
                     <input type="hidden" id="lessonId" value="">
+                    <input type="hidden" id="sectionIdForLesson" value="">
                     <label for="lessonTitle">Title:</label>
                     <input type="text" id="lessonTitle" name="lessonTitle" required>
-                    <label for="lessonDuration">Duration (in minutes):</label>
-                    <input type="number" id="lessonDuration" name="lessonDuration" required>
-                    <label for="lessonContent">Content:</label>
-                    <textarea id="lessonContent" name="lessonContent"></textarea>
-                    <button type="submit">Save</button>
+                    <label for="lessonSummary">Summary:</label>
+                    <textarea id="lessonSummary" name="lessonSummary"></textarea>
+                    <label for="lessonVideoUrl">Video URL:</label>
+                    <input type="text" id="lessonVideoUrl" name="lessonVideoUrl">
+                    <button type="submit" class="btn">Save</button>
                 </form>
             </div>
         </div>
     </div>
-
     <div id="footer"></div>
 
     <script type="module" src="../js/api.js"></script>
     <script type="module" src="../js/sections.js"></script>
     <script type="module" src="../js/lessons.js"></script>
     <script type="module" src="../js/course-content.js"></script>
-    <script type="module" src="../js/main.js"></script>
 </body>
 </html>

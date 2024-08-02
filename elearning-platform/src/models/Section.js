@@ -1,11 +1,9 @@
-
 const db = require('../config/db');
 
 class Section {
     static async create(section) {
         const [result] = await db.execute(
-            `INSERT INTO sections (course_id, title, description) 
-             VALUES (?, ?, ?)`,
+            'INSERT INTO sections (course_id, title, description) VALUES (?, ?, ?)',
             [section.course_id, section.title, section.description]
         );
         return result.insertId;
@@ -13,7 +11,7 @@ class Section {
 
     static async getAll() {
         const [rows] = await db.execute('SELECT * FROM sections');
-        return Array.isArray(rows) ? rows : []; // Đảm bảo trả về mảng
+        return Array.isArray(rows) ? rows : [];
     }
 
     static async getById(section_id) {
@@ -23,8 +21,7 @@ class Section {
 
     static async update(section_id, section) {
         await db.execute(
-            `UPDATE sections SET course_id = ?, title = ?, description = ? 
-             WHERE section_id = ?`,
+            'UPDATE sections SET course_id = ?, title = ?, description = ? WHERE section_id = ?',
             [section.course_id, section.title, section.description, section_id]
         );
     }

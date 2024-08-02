@@ -35,19 +35,15 @@ async function fetchData(endpoint, method = 'GET', data = null) {
 
 export const api = {
     // User authentication
-    login: (data) => {
-        console.log('Sending login request:', data);
-        return fetchData('/auth/login', 'POST', data);
-      },
+    login: (data) => fetchData('/auth/login', 'POST', data),
     register: (data) => fetchData('/auth/register', 'POST', data),
 
-
-      // User-related API methods
-      getUsers: () => fetchData('/users'),
-      getUser: (userId) => fetchData(`/users/${userId}`),
-      createUser: (data) => fetchData('/users', 'POST', data),
-      updateUser: (userId, data) => fetchData(`/users/${userId}`, 'PUT', data),
-      deleteUser: (userId) => fetchData(`/users/${userId}`, 'DELETE'),
+    // User-related API methods
+    getUsers: () => fetchData('/users'),
+    getUser: (userId) => fetchData(`/users/${userId}`),
+    createUser: (data) => fetchData('/users', 'POST', data),
+    updateUser: (userId, data) => fetchData(`/users/${userId}`, 'PUT', data),
+    deleteUser: (userId) => fetchData(`/users/${userId}`, 'DELETE'),
 
     // Course-related API methods
     getCourses: () => fetchData('/courses'),
@@ -58,13 +54,14 @@ export const api = {
     searchCourses: (query) => fetchData(`/courses/search?${new URLSearchParams(query)}`),
 
     // Section-related API methods
-    getSectionsByCourse: (courseId) => fetchData(`/sections?courseId=${courseId}`),
+    getSections: (courseId) => fetchData(`/sections?courseId=${courseId}`),
+    getSection: (sectionId) => fetchData(`/sections/${sectionId}`),
     createSection: (data) => fetchData('/sections', 'POST', data),
     updateSection: (sectionId, data) => fetchData(`/sections/${sectionId}`, 'PUT', data),
     deleteSection: (sectionId) => fetchData(`/sections/${sectionId}`, 'DELETE'),
 
     // Lesson-related API methods
-    getLessonsBySection: (sectionId) => fetchData(`/lessons?sectionId=${sectionId}`),
+    getLessons: (sectionId) => fetchData(`/lessons?sectionId=${sectionId}`),
     getLesson: (lessonId) => fetchData(`/lessons/${lessonId}`),
     createLesson: (data) => fetchData('/lessons', 'POST', data),
     updateLesson: (lessonId, data) => fetchData(`/lessons/${lessonId}`, 'PUT', data),

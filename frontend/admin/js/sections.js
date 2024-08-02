@@ -1,97 +1,131 @@
 import { api } from './api.js';
+import { loadLessons, openLessonModal } from './lessons.js';
 
-// Hàm tải các sections của một khóa học
-async function loadSections(courseId) {
+export async function loadSections(courseId) {
     try {
-        // Gọi API để lấy dữ liệu các sections theo courseId
-        const response = await api.getSectionsByCourse(courseId);
-        // Kiểm tra xem response có phải là mảng hay không
-        if (!Array.isArray(response)) {
-            console.warn('Dữ liệu trả về không phải là mảng hoặc không hợp lệ.');
-            return;
-        }
-
-        const sections = response;
-
-        // Kiểm tra xem mảng sections có rỗng hay không
-        if (sections.length === 0) {
-            console.warn('Không có dữ liệu sections.');
-            return;
-        }
-
-        // Xử lý và hiển thị dữ liệu trên giao diện
-        const tableBody = document.querySelector('#sections-list');
-        if (!tableBody) {
-            console.error('Không tìm thấy phần tử bảng để hiển thị sections.');
-            return;
-        }
-
-
-        // Tạo nội dung HTML cho bảng sections
-        tableBody.innerHTML = sections.map(section => `
-            <tr>
-                <td>${section.section_id}</td>
-                <td>${section.title}</td>
-                <td>${section.description || 'N/A'}</td>
-                <td>
-                    <button class="action-btn edit-btn" data-id="${section.section_id}">Edit</button>
-                    <button class="action-btn delete-btn" data-id="${section.section_id}">Delete</button>
-                    <!-- Thêm nút để xem lessons nếu cần -->
-                </td>
-            </tr>
+        const sections = await api.getSections(courseId);
+        const courseOutline = document.getElementById('course-outline');
+        courseOutline.innerHTML = sections.map(section => `
+            <div class="section" data-id="${section.section_id}">
+                <div class="section-header">
+                    <span class="section-title">${section.title}</span>
+                    <div class="section-actions">
+                        <button class="btn edit-section-btn">Edit</button>
+                        <button class="btn delete-section-btn">Delete</button>
+                        <button class="btn add-lesson-btn">Add Lesson</button>
+                    </div>
+                </div>
+                <div class="section-content"></div>
+            </div>
         `).join('');
 
-        // Thêm sự kiện cho các nút "Edit" và "Delete"
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', () => openSectionModal(btn.dataset.id));
-        });
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', () => deleteSection(courseId, btn.dataset.id));
-        });
+        addSectionEventListeners();
+        sections.forEach(section => loadLessons(section.section_id));
     } catch (error) {
         console.error('Error loading sections:', error);
     }
 }
 
-// Hàm xóa một section
-async function deleteSection(courseId, sectionId) {
+function addSectionEventListeners() {
+    document.querySelectorAll('.section-header').forEach(header => {
+        header.addEventListener('click', () => toggleSection(header.closest('.section')));
+    });
+    document.querySelectorAll('.edit-section-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const sectionId = e.target.closest('.section').dataset.id;
+            if (sectionId) {
+                openSectionModal(sectionId);
+            } else {
+                console.error('Section ID not found');
+            }
+        });
+    });
+    document.querySelectorAll('.delete-section-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const sectionId = e.target.closest('.section').dataset.id;
+            if (sectionId) {
+                deleteSection(sectionId);
+            } else {
+                console.error('Section ID not found');
+            }
+        });
+    });
+    document.querySelectorAll('.add-lesson-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const sectionId = e.target.closest('.section').dataset.id;
+            if (sectionId) {
+                openLessonModal(null, sectionId);
+            } else {
+                console.error('Section ID not found');
+            }
+        });
+    });
+}
+
+function toggleSection(sectionElement) {
+    sectionElement.classList.toggle('expanded');
+}
+
+export function openSectionModal(sectionId = null) {
+    const modal = document.getElementById('section-modal');
+    const form = document.getElementById('section-form');
+    const title = document.getElementById('section-modal-title');
+
+    form.reset();
+    form.dataset.id = sectionId || '';
+    title.textContent = sectionId ? 'Edit Section' : 'Add New Section';
+
+    if (sectionId) {
+        api.getSection(sectionId).then(section => {
+            document.getElementById('sectionTitle').value = section.title;
+            document.getElementById('sectionDescription').value = section.description;
+        }).catch(error => console.error('Error loading section data:', error));
+    }
+
+    modal.style.display = 'flex';
+}
+
+async function deleteSection(sectionId) {
+    if (!sectionId) {
+        console.error('Section ID is undefined');
+        return;
+    }
     if (confirm('Are you sure you want to delete this section?')) {
         try {
             await api.deleteSection(sectionId);
-            alert('Section deleted successfully!');
-            loadSections(courseId); // Tải lại các section sau khi xóa
+            loadSections(document.getElementById('course-name').dataset.courseId);
         } catch (error) {
             console.error('Error deleting section:', error);
-            alert('An error occurred while deleting the section.');
         }
     }
 }
 
-// Hàm mở modal để chỉnh sửa hoặc thêm một section
-function openSectionModal(sectionId = null) {
-    const modal = document.getElementById('section-modal');
-    document.getElementById('section-modal-title').textContent = sectionId ? 'Edit Section' : 'Add New Section';
+export async function saveSection() {
     const form = document.getElementById('section-form');
-    form.reset();
-    document.getElementById('sectionId').value = sectionId || '';
+    const sectionId = form.dataset.id;
+    const section = {
+        course_id: document.getElementById('course-name').dataset.courseId,
+        title: document.getElementById('sectionTitle').value,
+        description: document.getElementById('sectionDescription').value,
+    };
 
-    if (sectionId) {
-        loadSection(sectionId); // Tải thông tin section nếu có sectionId
-    }
-
-    modal.style.display = 'block';
-}
-
-// Hàm tải thông tin chi tiết của một section
-async function loadSection(sectionId) {
     try {
-        const section = await api.getSection(sectionId);
-        document.getElementById('sectionTitle').value = section.title;
-        document.getElementById('sectionDescription').value = section.description || '';
+        if (sectionId) {
+            await api.updateSection(sectionId, section);
+        } else {
+            await api.createSection(section);
+        }
+        document.getElementById('section-modal').style.display = 'none';
+        loadSections(document.getElementById('course-name').dataset.courseId);
     } catch (error) {
-        console.error('Error loading section details:', error);
+        console.error('Error saving section:', error);
     }
 }
 
-// Xuất các hàm cần thiết
-export { loadSections, openSectionModal };
+document.getElementById('section-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveSection();
+});
