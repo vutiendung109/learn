@@ -5,16 +5,31 @@ const db = require('../config/db');
 class Course {
   static async create(course) {
     const [result] = await db.execute(
-        `INSERT INTO courses (title, description, content, regular_price, discounted_price, discount_start_date, discount_end_date, image_url) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url]
+      `INSERT INTO courses (title, description, content, regular_price, discounted_price, discount_start_date, discount_end_date, image_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        course.title,
+        course.description,
+        course.content,
+        course.regular_price,
+        course.discounted_price,
+        course.discount_start_date,
+        course.discount_end_date,
+        course.image_url
+      ]
     );
     return result.insertId;
+  }
+static async getAll(startIndex, limit) {
+  const query = 'SELECT * FROM courses LIMIT ? OFFSET ?';
+  const [courses] = await db.query(query, [limit, startIndex]);
+  return courses;
 }
 
-static async getAll() {
-    const [rows] = await db.execute('SELECT * FROM courses');
-    return rows;
+static async getTotalCount() {
+  const query = 'SELECT COUNT(*) as total FROM courses';
+  const [result] = await db.query(query);
+  return result[0].total;
 }
 
 static async getById(course_id) {
@@ -22,12 +37,22 @@ static async getById(course_id) {
     return rows[0];
 }
 
+// static async update(course_id, course) {
+//     await db.execute(
+//         `UPDATE courses SET title = ?, description = ?, content = ?, regular_price = ?, discounted_price = ?, discount_start_date = ?, discount_end_date = ?, image_url = ? 
+//          WHERE course_id = ?`,
+//         [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url, course_id]
+//     );
+   
+// }
+
 static async update(course_id, course) {
-    await db.execute(
-        `UPDATE courses SET title = ?, description = ?, content = ?, regular_price = ?, discounted_price = ?, discount_start_date = ?, discount_end_date = ?, image_url = ? 
-         WHERE course_id = ?`,
-        [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url, course_id]
-    );
+  const [result] = await db.execute(
+      `UPDATE courses SET title = ?, description = ?, content = ?, regular_price = ?, discounted_price = ?, discount_start_date = ?, discount_end_date = ?, image_url = ? 
+       WHERE course_id = ?`,
+      [course.title, course.description, course.content, course.regular_price, course.discounted_price, course.discount_start_date, course.discount_end_date, course.image_url, course_id]
+  );
+  return result.affectedRows > 0;
 }
 
 static async delete(course_id) {

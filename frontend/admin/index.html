@@ -4,7 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin - Hệ thống bán khóa học</title>
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    
+
+    <script>
+      // Kiểm tra xác thực ngay khi trang được tải
+      function checkAuth() {
+        const token = localStorage.getItem('token');
+        const userRole = localStorage.getItem('userRole');
+        if (!token || userRole !== 'admin') {
+          window.location.href = 'login.html';
+        }
+      }
+      // Gọi hàm kiểm tra xác thực
+      checkAuth();
+    </script>
   </head>
   <body>
     <div id="header"></div>

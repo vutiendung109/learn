@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Content</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/course-content.css">
+</head>
+<body>
+    <div id="header"></div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <main>
+            <h1>Course Content</h1>
+            <h2 id="course-title">Course Title: <span id="course-name"></span></h2>
+            <button id="add-section-btn">Add New Section</button>
+            
+            <div id="course-outline">
+                <!-- Sections and lessons will be dynamically added here -->
+            </div>
+        </main>
+
+        <!-- Modal for Add/Edit Section -->
+        <div id="section-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="section-modal-title">Add New Section</h2>
+                <form id="section-form">
+                    <input type="hidden" id="sectionId" value="">
+                    <label for="sectionTitle">Title:</label>
+                    <input type="text" id="sectionTitle" name="sectionTitle" required>
+                    <label for="sectionDescription">Description:</label>
+                    <textarea id="sectionDescription" name="sectionDescription"></textarea>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal for Add/Edit Lesson -->
+        <div id="lesson-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="lesson-modal-title">Add New Lesson</h2>
+                <form id="lesson-form">
+                    <input type="hidden" id="lessonId" value="">
+                    <label for="lessonTitle">Title:</label>
+                    <input type="text" id="lessonTitle" name="lessonTitle" required>
+                    <label for="lessonDuration">Duration (in minutes):</label>
+                    <input type="number" id="lessonDuration" name="lessonDuration" required>
+                    <label for="lessonContent">Content:</label>
+                    <textarea id="lessonContent" name="lessonContent"></textarea>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <script type="module" src="../js/api.js"></script>
+    <script type="module" src="../js/sections.js"></script>
+    <script type="module" src="../js/lessons.js"></script>
+    <script type="module" src="../js/course-content.js"></script>
+    <script type="module" src="../js/main.js"></script>
+</body>
+</html>

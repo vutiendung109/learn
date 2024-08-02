@@ -1,126 +1,8 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.container {
-    display: flex;
-    flex: 1;
-}
-
-#header {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-}
-
-#sidebar {
-    width: 200px;
-    background-color: #f0f0f0;
-    padding: 20px;
-}
-
-main {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #fff;
-}
-
-#footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 10px;
-}
-
-/* Styles for sidebar navigation */
-#sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#sidebar ul li {
-    margin-bottom: 10px;
-}
-
-#sidebar ul li a {
-    text-decoration: none;
-    color: #333;
-}
-
-#sidebar ul li a:hover {
-    color: #0066cc;
-}
-
-/* Additional styles for better visual hierarchy */
-h1 {
-    margin: 0;
-}
-
-h2 {
-    color: #333;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
-}
-
-/* Specific Styles for Course Management */
-#courses-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-#courses-table th, #courses-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-#courses-table th {
-    background-color: #f4f4f4;
-}
-
-#courses-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-#courses-table tr:hover {
-    background-color: #f1f1f1;
-}
-
-#add-course-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    margin: 20px 0;
-    border: none;
-    cursor: pointer;
-}
-
-#add-course-btn:hover {
-    background-color: #45a049;
-}
-
-button {
-    background-color: #008CBA;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #007B9E;
-}
+/* course.css */
 
 /* Modal styles */
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -129,15 +11,18 @@ button:hover {
     height: 100%;
     overflow: auto;
     background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
 }
 
 .close-btn {
@@ -154,91 +39,131 @@ button:hover {
     cursor: pointer;
 }
 
-/* Sections and Lessons Page */
-#sections-lessons-page {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 2;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.8); /* Semi-transparent background */
+/* Course management styles */
+#add-course-btn {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-#sections-lessons-content {
-    background-color: #fff;
-    margin: 5% auto;
-    padding: 20px;
-    width: 80%;
-    border-radius: 10px;
+#add-course-btn:hover {
+    background-color: #004d99;
 }
 
-#sections-table {
+#courses-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-#sections-table th, #sections-table td {
+#courses-table th,
+#courses-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
-#sections-table th {
-    background-color: #f4f4f4;
+#courses-table th {
+    background-color: #f0f0f0;
+    color: #333;
 }
 
-#sections-table tr:nth-child(even) {
+#courses-table tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-#sections-table tr:hover {
+#courses-table tr:hover {
     background-color: #f1f1f1;
 }
 
-#add-section-btn {
-    background-color: #4CAF50;
+#courses-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #333;
+    color: white;
+}
+
+#course-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+#course-form input[type="text"],
+#course-form input[type="number"],
+#course-form input[type="datetime-local"],
+#course-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#course-form button {
+    background-color: #0066cc;
     color: white;
     padding: 10px 20px;
-    margin: 20px 0;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
 
-#add-section-btn:hover {
-    background-color: #45a049;
+#course-form button:hover {
+    background-color: #004d99;
 }
 
-#sections-table .lesson-row {
-    background-color: #e9f7df;
+#modal-title {
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    color: #333;
 }
 
-#sections-table .lesson-row td {
-    padding-left: 30px; /* Indentation for lessons */
+/* Action buttons styles */
+.action-btn {
+    margin-right: 10px; /* Add margin between buttons */
+    padding: 5px 10px; /* Add padding for better click area */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-#add-lesson-btn {
-    background-color: #4CAF50;
+.edit-btn {
+    background-color: #4CAF50; /* Green */
     color: white;
-    padding: 5px 10px;
-    margin-left: 10px;
-    border: none;
+}
+
+.delete-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+.manage-content-btn {
+    background-color: #008CBA; /* Blue */
+    color: white;
+}
+button {
+    padding: 3px;
+    
+    margin: 5px;
+   
     cursor: pointer;
 }
 
-#add-lesson-btn:hover {
-    background-color: #45a049;
+/* Adjust spacing for the "Manage Courses" button */
+main h1 {
+    margin-bottom: 20px; /* Add bottom margin to the header */
 }
 
-/* Modals for Sections and Lessons */
-#section-modal .modal-content, #lesson-modal .modal-content {
-    margin-top: 10%;
-    width: 70%;
-}
-
-#section-modal h2, #lesson-modal h2 {
-    margin-top: 0;
+#add-course-btn {
+    margin-top: 10px; /* Add top margin to the button */
+    margin-bottom: 20px; /* Ensure bottom margin for spacing */
 }

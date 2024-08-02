@@ -18,12 +18,18 @@ router.get('/search', paginationMiddleware, courseController.searchCourses);
 
 
 //  UPDATE: lần 2 chưa có middleware phân trang
-router.post('/', courseController.createCourse);
-router.get('/', courseController.getCourses);
-router.get('/:id', courseController.getCourseById);
-router.put('/:id', courseController.updateCourse);
-router.delete('/:id', courseController.deleteCourse);
+// router.post('/', courseController.createCourse);
+// router.get('/', courseController.getCourses);
+// router.get('/:id', courseController.getCourseById);
+// router.put('/:id', courseController.updateCourse);
+// router.delete('/:id', courseController.deleteCourse);
 
+router.post('/', authMiddleware, courseController.createCourse);
+router.get('/', paginationMiddleware, courseController.getCourses);
+router.get('/search', paginationMiddleware, courseController.searchCourses);
+router.get('/:id', courseController.getCourseById);
+router.put('/:id', authMiddleware, courseController.updateCourse);
+router.delete('/:id', authMiddleware, courseController.deleteCourse)
 
 
 

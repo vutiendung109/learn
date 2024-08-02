@@ -1,123 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manage Courses</title>
-    <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/course.css">
-</head>
-<body>
+    <script src="../js/auth.js"></script>
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/course.css" />
+  </head>
+  <body>
     <div id="header"></div>
     <div class="container">
-        <div id="sidebar"></div>
-        <main>
-            <h1>Manage Courses</h1>
-            <button id="add-course-btn">Add New Course</button>
-            <table id="courses-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Regular Price</th>
-                        <th>Discounted Price</th>
-                        <th>Discount Start Date</th>
-                        <th>Discount End Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="courses-list"></tbody>
-            </table>
-        </main>
+      <div id="sidebar"></div>
+      <main>
+        <h1>Manage Courses</h1>
+        <button id="add-course-btn">Add New Course</button>
+        <table id="courses-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Regular Price</th>
+              <th>Discounted Price</th>
+              <th>Discount Start Date</th>
+              <th>Discount End Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="courses-list"></tbody>
+        </table>
+      </main>
 
-        <!-- Modal for Add/Edit Course -->
-        <div id="course-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <h2 id="modal-title">Add New Course</h2>
-                <form id="course-form">
-                    <input type="hidden" id="courseId" value="">
-                    <label for="title">Title:</label>
-                    <input type="text" id="title" name="title" required>
-                    <label for="regularPrice">Regular Price:</label>
-                    <input type="number" id="regularPrice" name="regularPrice" step="0.01" required>
-                    <label for="discountedPrice">Discounted Price:</label>
-                    <input type="number" id="discountedPrice" name="discountedPrice" step="0.01">
-                    <label for="discountStartDate">Discount Start Date:</label>
-                    <input type="datetime-local" id="discountStartDate" name="discountStartDate">
-                    <label for="discountEndDate">Discount End Date:</label>
-                    <input type="datetime-local" id="discountEndDate" name="discountEndDate">
-                    <label for="imageUrl">Image URL:</label>
-                    <input type="text" id="imageUrl" name="imageUrl">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description"></textarea>
-                    <button type="submit">Save</button>
-                </form>
-            </div>
+      <!-- Modal for Add/Edit Course -->
+      <div id="course-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-btn">&times;</span>
+          <h2 id="modal-title">Add New Course</h2>
+          <form id="course-form">
+            <input type="hidden" id="courseId" value="" />
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required />
+            <label for="regularPrice">Regular Price:</label>
+            <input
+              type="number"
+              id="regularPrice"
+              name="regularPrice"
+              step="0.01"
+              required
+            />
+            <label for="discountedPrice">Discounted Price:</label>
+            <input
+              type="number"
+              id="discountedPrice"
+              name="discountedPrice"
+              step="0.01"
+            />
+            <label for="discountStartDate">Discount Start Date:</label>
+            <input
+              type="datetime-local"
+              id="discountStartDate"
+              name="discountStartDate"
+            />
+            <label for="discountEndDate">Discount End Date:</label>
+            <input
+              type="datetime-local"
+              id="discountEndDate"
+              name="discountEndDate"
+            />
+            <label for="imageUrl">Image URL:</label>
+            <input type="text" id="imageUrl" name="imageUrl" />
+            <label for="description">Description:</label>
+            <textarea id="description" name="description"></textarea>
+
+            <label for="content">Content:</label>
+            <textarea id="content" name="content"></textarea>
+
+            <button type="submit">Save</button>
+          </form>
         </div>
-
-        <!-- Subpage for Sections and Lessons -->
-        <div id="sections-lessons-page" class="modal">
-            <div id="sections-lessons-content" class="modal-content">
-                <button id="back-to-courses-btn">Back to Courses</button>
-                <h2 id="course-title">Course Title: <span id="course-name"></span></h2>
-                <button id="add-section-btn">Add New Section</button>
-                <button id="add-lesson-btn">Add New Lesson</button>
-                <table id="sections-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sections-list"></tbody>
-                </table>
-
-                <!-- Modal for Add/Edit Section -->
-                <div id="section-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-btn">&times;</span>
-                        <h2 id="section-modal-title">Add New Section</h2>
-                        <form id="section-form">
-                            <input type="hidden" id="sectionId" value="">
-                            <label for="sectionTitle">Title:</label>
-                            <input type="text" id="sectionTitle" name="sectionTitle" required>
-                            <label for="sectionDescription">Description:</label>
-                            <textarea id="sectionDescription" name="sectionDescription"></textarea>
-                            <button type="submit">Save</button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Modal for Add/Edit Lesson -->
-                <div id="lesson-modal" class="modal">
-                    <div class="modal-content">
-                        <span class="close-btn">&times;</span>
-                        <h2 id="lesson-modal-title">Add New Lesson</h2>
-                        <form id="lesson-form">
-                            <input type="hidden" id="lessonId" value="">
-                            <label for="lessonTitle">Title:</label>
-                            <input type="text" id="lessonTitle" name="lessonTitle" required>
-                            <label for="lessonDuration">Duration (in minutes):</label>
-                            <input type="number" id="lessonDuration" name="lessonDuration" required>
-                            <label for="lessonContent">Content:</label>
-                            <textarea id="lessonContent" name="lessonContent"></textarea>
-                            <button type="submit">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
     <div id="footer"></div>
 
     <script type="module" src="../js/api.js"></script>
     <script type="module" src="../js/courses.js"></script>
-    <script type="module" src="../js/sections.js"></script>
-    <script type="module" src="../js/lessons.js"></script>
     <script type="module" src="../js/main.js"></script>
-</body>
+  </body>
 </html>

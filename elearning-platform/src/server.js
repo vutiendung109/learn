@@ -1,9 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-// const authRoutes = require('./routes/auth');
-// const courseRoutes = require('./routes/course');
-// const enrollmentRoutes = require('./routes/enrollments');
-// const reviewRoutes = require('./routes/reviews');
+const authRoutes = require('./routes/auth');
+const enrollmentRoutes = require('./routes/enrollments');
+const reviewRoutes = require('./routes/reviews');
 const adminRoutes = require('./routes/admin');
 
 const path = require('path');
@@ -31,12 +30,15 @@ const lessonRoutes = require('./routes/lesson');
 
 // Middleware
 app.use(cors());
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 app.use(express.json());
 
 
-
+app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 
 //Routes
@@ -44,6 +46,9 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/sections', sectionRoutes);
 app.use('/api/lessons', lessonRoutes);
 
+app.get('/api/auth/login', (req, res) => {
+  res.send('Login endpoint is working');
+});
 // app.use('/api/auth', authRoutes);
 // app.use('/api/courses', courseRoutes);
 // app.use('/api/enrollments', enrollmentRoutes);

@@ -1,9 +1,10 @@
 import { api } from './api.js';
-import { loadSections, openSectionModal } from './sections.js';
 
 async function loadCourses() {
     try {
-        const courses = await api.getCourses();
+        const response = await api.getCourses();
+        const courses = response.courses; // Lấy mảng courses từ response
+
         const tableBody = document.querySelector('#courses-table tbody');
         tableBody.innerHTML = courses.map(course => `
             <tr>
@@ -16,7 +17,7 @@ async function loadCourses() {
                 <td>
                     <button class="action-btn edit-btn" data-id="${course.course_id}">Edit</button>
                     <button class="action-btn delete-btn" data-id="${course.course_id}">Delete</button>
-                    <button class="action-btn view-sections" data-id="${course.course_id}">View Sections</button>
+                    <button class="action-btn manage-content-btn" data-id="${course.course_id}">Manage Content</button>
                 </td>
             </tr>
         `).join('');
@@ -27,8 +28,8 @@ async function loadCourses() {
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', () => deleteCourse(btn.dataset.id));
         });
-        document.querySelectorAll('.view-sections').forEach(btn => {
-            btn.addEventListener('click', () => viewSections(btn.dataset.id));
+        document.querySelectorAll('.manage-content-btn').forEach(btn => {
+            btn.addEventListener('click', () => manageContent(btn.dataset.id));
         });
     } catch (error) {
         console.error('Error loading courses:', error);
@@ -56,21 +57,24 @@ function closeModal() {
 async function loadCourse(courseId) {
     try {
         const course = await api.getCourse(courseId);
+        document.getElementById('courseId').value = courseId; // Thêm dòng này
         document.getElementById('title').value = course.title || '';
         document.getElementById('regularPrice').value = course.regular_price || '';
         document.getElementById('discountedPrice').value = course.discounted_price || '';
-
         document.getElementById('discountStartDate').value = course.discount_start_date ? new Date(course.discount_start_date).toISOString().slice(0, -1) : '';
         document.getElementById('discountEndDate').value = course.discount_end_date ? new Date(course.discount_end_date).toISOString().slice(0, -1) : '';
-
         document.getElementById('imageUrl').value = course.image_url || '';
         document.getElementById('description').value = course.description || '';
+        document.getElementById('content').value = course.content || ''; 
     } catch (error) {
         console.error('Error loading course details:', error);
     }
 }
+
 function openEditModal(courseId) {
+    console.log('Editing course with ID:', courseId);
     openModal('Edit Course', courseId);
+    loadCourse(courseId);
 }
 
 async function deleteCourse(courseId) {
@@ -86,11 +90,9 @@ async function deleteCourse(courseId) {
     }
 }
 
-function viewSections(courseId) {
-    const courseTitle = document.querySelector(`button[data-id="${courseId}"]`).closest('tr').querySelector('td:nth-child(2)').innerText;
-    document.querySelector('#course-name').innerText = courseTitle;
-    document.querySelector('#sections-lessons-page').style.display = 'block';
-    loadSections(courseId); // Gọi hàm để tải và hiển thị các sections
+function manageContent(courseId) {
+    // Chuyển hướng đến trang quản lý nội dung khóa học
+    window.location.href = `course-content.html?id=${courseId}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -104,15 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const courseId = document.getElementById('courseId').value;
         const courseData = {
-            title: document.getElementById('title').value,
-            regular_price: parseFloat(document.getElementById('regularPrice').value),
+            title: document.getElementById('title').value || null,
+            description: document.getElementById('description').value || null,
+            content: document.getElementById('content').value || null,
+            regular_price: parseFloat(document.getElementById('regularPrice').value) || null,
             discounted_price: parseFloat(document.getElementById('discountedPrice').value) || null,
-            discount_start_date: document.getElementById('discountStartDate').value,
-            discount_end_date: document.getElementById('discountEndDate').value,
-            image_url: document.getElementById('imageUrl').value,
-            description: document.getElementById('description').value,
+            discount_start_date: document.getElementById('discountStartDate').value || null,
+            discount_end_date: document.getElementById('discountEndDate').value || null,
+            image_url: document.getElementById('imageUrl').value || null
         };
-
+    
         try {
             if (courseId) {
                 await api.updateCourse(courseId, courseData);
@@ -132,13 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#course-modal .close-btn').addEventListener('click', () => {
         closeModal();
     });
-
-    document.querySelector('#back-to-courses-btn').addEventListener('click', () => {
-        document.querySelector('#sections-lessons-page').style.display = 'none';
-    });
-
-    // Uncomment and update if you want to add a section
-    // document.querySelector('#add-section-btn').addEventListener('click', () => {
-    //     openSectionModal('Add New Section');
-    // });
 });
