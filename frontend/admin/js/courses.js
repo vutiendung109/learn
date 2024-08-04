@@ -7,19 +7,21 @@ async function loadCourses() {
 
         const tableBody = document.querySelector('#courses-table tbody');
         tableBody.innerHTML = courses.map(course => `
-            <tr>
-                <td>${course.course_id}</td>
-                <td>${course.title}</td>
-                <td>${course.regular_price}</td>
-                <td>${course.discounted_price || 'N/A'}</td>
-                <td>${course.discount_start_date ? new Date(course.discount_start_date).toLocaleString() : ''}</td>
-                <td>${course.discount_end_date ? new Date(course.discount_end_date).toLocaleString() : ''}</td>
-                <td>
-                    <button class="action-btn edit-btn" data-id="${course.course_id}">Edit</button>
-                    <button class="action-btn delete-btn" data-id="${course.course_id}">Delete</button>
-                    <button class="action-btn manage-content-btn" data-id="${course.course_id}">Manage Content</button>
-                </td>
-            </tr>
+           <tr>
+        <td>${course.course_id}</td>
+        <td>${course.title}</td>
+        <td>${course.category_id || 'N/A'}</td>
+        <td>${course.regular_price}</td>
+        <td>${course.discounted_price || 'N/A'}</td>
+        <td>${course.discount_start_date ? new Date(course.discount_start_date).toLocaleString() : ''}</td>
+        <td>${course.discount_end_date ? new Date(course.discount_end_date).toLocaleString() : ''}</td>
+        <td>${course.status}</td>
+        <td>
+          <button class="action-btn edit-btn" data-id="${course.course_id}">Edit</button>
+          <button class="action-btn delete-btn" data-id="${course.course_id}">Delete</button>
+          <button class="action-btn manage-content-btn" data-id="${course.course_id}">Manage Content</button>
+        </td>
+      </tr>
         `).join('');
 
         document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -54,23 +56,30 @@ function closeModal() {
     document.getElementById('course-modal').style.display = 'none';
 }
 
-async function loadCourse(courseId) {
+function formatDateTimeForInput(dateTimeString) {
+    if (!dateTimeString) return '';
+    const date = new Date(dateTimeString);
+    return date.toISOString().slice(0, 16); // Cắt bỏ phần giây và múi giờ
+  }
+  
+  async function loadCourse(courseId) {
     try {
-        const course = await api.getCourse(courseId);
-        document.getElementById('courseId').value = courseId; // Thêm dòng này
-        document.getElementById('title').value = course.title || '';
-        document.getElementById('regularPrice').value = course.regular_price || '';
-        document.getElementById('discountedPrice').value = course.discounted_price || '';
-        document.getElementById('discountStartDate').value = course.discount_start_date ? new Date(course.discount_start_date).toISOString().slice(0, -1) : '';
-        document.getElementById('discountEndDate').value = course.discount_end_date ? new Date(course.discount_end_date).toISOString().slice(0, -1) : '';
-        document.getElementById('imageUrl').value = course.image_url || '';
-        document.getElementById('description').value = course.description || '';
-        document.getElementById('content').value = course.content || ''; 
+      const course = await api.getCourse(courseId);
+      document.getElementById('courseId').value = courseId;
+      document.getElementById('categoryId').value = course.category_id || '';
+      document.getElementById('title').value = course.title || '';
+      document.getElementById('regularPrice').value = course.regular_price || '';
+      document.getElementById('discountedPrice').value = course.discounted_price || '';
+      document.getElementById('discountStartDate').value = formatDateTimeForInput(course.discount_start_date);
+      document.getElementById('discountEndDate').value = formatDateTimeForInput(course.discount_end_date);
+      document.getElementById('imageUrl').value = course.image_url || '';
+      document.getElementById('description').value = course.description || '';
+      document.getElementById('content').value = course.content || '';
+      document.getElementById('status').value = course.status || 'draft';
     } catch (error) {
-        console.error('Error loading course details:', error);
+      console.error('Error loading course details:', error);
     }
-}
-
+  }
 function openEditModal(courseId) {
     console.log('Editing course with ID:', courseId);
     openModal('Edit Course', courseId);
@@ -102,36 +111,37 @@ document.addEventListener('DOMContentLoaded', () => {
         openModal('Add New Course');
     });
 
-    document.querySelector('#course-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const courseId = document.getElementById('courseId').value;
-        const courseData = {
-            title: document.getElementById('title').value || null,
-            description: document.getElementById('description').value || null,
-            content: document.getElementById('content').value || null,
-            regular_price: parseFloat(document.getElementById('regularPrice').value) || null,
-            discounted_price: parseFloat(document.getElementById('discountedPrice').value) || null,
-            discount_start_date: document.getElementById('discountStartDate').value || null,
-            discount_end_date: document.getElementById('discountEndDate').value || null,
-            image_url: document.getElementById('imageUrl').value || null
-        };
-    
-        try {
-            if (courseId) {
-                await api.updateCourse(courseId, courseData);
-                alert('Course updated successfully!');
-            } else {
-                await api.createCourse(courseData);
-                alert('Course created successfully!');
-            }
-            loadCourses();
-            closeModal();
-        } catch (error) {
-            console.error('Error saving course:', error);
-            alert('An error occurred while saving the course.');
-        }
-    });
-
+// Cập nhật event listener cho form submission
+document.querySelector('#course-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const courseId = document.getElementById('courseId').value;
+    const courseData = {
+      category_id: document.getElementById('categoryId').value || null,
+      title: document.getElementById('title').value,
+      description: document.getElementById('description').value,
+      content: document.getElementById('content').value,
+      regular_price: parseFloat(document.getElementById('regularPrice').value),
+      discounted_price: parseFloat(document.getElementById('discountedPrice').value) || null,
+      discount_start_date: document.getElementById('discountStartDate').value || null,
+      discount_end_date: document.getElementById('discountEndDate').value || null,
+      image_url: document.getElementById('imageUrl').value,
+      status: document.getElementById('status').value
+    };
+  
+    try {
+      if (courseId) {
+        await api.updateCourse(courseId, courseData);
+        alert('Course updated successfully!');
+      } else {
+        await api.createCourse(courseData);
+        alert('Course created successfully!');
+      }
+      loadCourses();
+      closeModal();
+    } catch (error) {
+      console.error('Error saving course:', error);
+      alert(`An error occurred while saving the course: ${error.message}`);    }
+  });
     document.querySelector('#course-modal .close-btn').addEventListener('click', () => {
         closeModal();
     });

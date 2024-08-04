@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Manage Courses</title>
-    <script src="../js/auth.js"></script>
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/course.css" />
   </head>
@@ -20,10 +19,12 @@
             <tr>
               <th>ID</th>
               <th>Title</th>
+              <th>Category</th>
               <th>Regular Price</th>
               <th>Discounted Price</th>
               <th>Discount Start Date</th>
               <th>Discount End Date</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -37,7 +38,9 @@
           <span class="close-btn">&times;</span>
           <h2 id="modal-title">Add New Course</h2>
           <form id="course-form">
-            <input type="hidden" id="courseId" value="" />
+            <input type="hidden" id="courseId" />
+            <label for="categoryId">Category:</label>
+            <input type="text" id="categoryId" name="categoryId" />
             <label for="title">Title:</label>
             <input type="text" id="title" name="title" required />
             <label for="regularPrice">Regular Price:</label>
@@ -71,10 +74,14 @@
             <input type="text" id="imageUrl" name="imageUrl" />
             <label for="description">Description:</label>
             <textarea id="description" name="description"></textarea>
-
             <label for="content">Content:</label>
             <textarea id="content" name="content"></textarea>
-
+            <label for="status">Status:</label>
+            <select id="status" name="status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+              <option value="hidden">Hidden</option>
+            </select>
             <button type="submit">Save</button>
           </form>
         </div>

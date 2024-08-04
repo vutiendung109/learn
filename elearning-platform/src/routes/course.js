@@ -29,7 +29,7 @@ router.get('/', paginationMiddleware, courseController.getCourses);
 router.get('/search', paginationMiddleware, courseController.searchCourses);
 router.get('/:id', courseController.getCourseById);
 router.put('/:id', authMiddleware, courseController.updateCourse);
-router.delete('/:id', authMiddleware, courseController.deleteCourse)
+router.delete('/:id', authMiddleware, courseController.deleteCourse);
 
 
 
