@@ -30,3 +30,7 @@ async function loadCourseDetails(courseId) {
         console.error('Error loading course details:', error);
     }
 }
+
+document.getElementById('back-btn').addEventListener('click', () => {
+    window.location.href = '../pages/courses.html'; // Thay đổi đường dẫn này thành URL của trang khóa học
+});

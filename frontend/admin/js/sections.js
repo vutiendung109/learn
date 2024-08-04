@@ -8,6 +8,7 @@ export async function loadSections(courseId) {
         courseOutline.innerHTML = sections.map(section => `
             <div class="section" data-id="${section.section_id}">
                 <div class="section-header">
+                    <span class="section-order">${section.order_num}.</span>
                     <span class="section-title">${section.title}</span>
                     <div class="section-actions">
                         <button class="btn edit-section-btn">Edit</button>
@@ -25,7 +26,6 @@ export async function loadSections(courseId) {
         console.error('Error loading sections:', error);
     }
 }
-
 function addSectionEventListeners() {
     document.querySelectorAll('.section-header').forEach(header => {
         header.addEventListener('click', () => toggleSection(header.closest('.section')));
@@ -110,6 +110,7 @@ export async function saveSection() {
         course_id: document.getElementById('course-name').dataset.courseId,
         title: document.getElementById('sectionTitle').value,
         description: document.getElementById('sectionDescription').value,
+        order_num: parseInt(document.getElementById('sectionOrder').value, 10)
     };
 
     try {
@@ -124,7 +125,6 @@ export async function saveSection() {
         console.error('Error saving section:', error);
     }
 }
-
 document.getElementById('section-form').addEventListener('submit', (e) => {
     e.preventDefault();
     saveSection();

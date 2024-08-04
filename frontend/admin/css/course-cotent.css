@@ -11,6 +11,16 @@ main {
     background-color: #fff;
 }
 
+h2#course-title {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+/* Adjust spacing for the "Add Section" button */
+#add-section-btn {
+    margin-bottom: 20px;
+}
+
 /* Section and Lesson Styles */
 #sections-container, #lessons-container {
     margin-bottom: 20px;
@@ -58,7 +68,7 @@ main {
 
 /* Button Styles */
 .btn {
-    padding: 5px 10px;
+    padding: 10px 15px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -134,4 +144,11 @@ form input, form textarea {
 form button[type="submit"] {
     align-self: flex-end;
     padding: 8px 15px;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: none;
 }

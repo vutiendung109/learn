@@ -11,7 +11,11 @@ exports.createLesson = async (req, res) => {
 
 exports.getLessons = async (req, res) => {
     try {
-        const lessons = await Lesson.getAll();
+        const sectionId = req.query.sectionId;
+        if (!sectionId) {
+            return res.status(400).json({ error: 'Section ID is required' });
+        }
+        const lessons = await Lesson.getAll(sectionId);
         res.status(200).json(lessons);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -21,6 +25,9 @@ exports.getLessons = async (req, res) => {
 exports.getLessonById = async (req, res) => {
     try {
         const lesson = await Lesson.getById(req.params.id);
+        if (!lesson) {
+            return res.status(404).json({ error: 'Lesson not found' });
+        }
         res.status(200).json(lesson);
     } catch (error) {
         res.status(500).json({ error: error.message });

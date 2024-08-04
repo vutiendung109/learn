@@ -3,8 +3,7 @@ const router = express.Router();
 const sectionController = require('../controllers/sectionController');
 
 // Route cho việc lấy các sections của một khóa học
-router.get('/courses/:courseId/sections', sectionController.getSectionsByCourseId);
-
+router.get('/courses/:courseId/sections', sectionController.getSections);
 // Routes cho các chức năng CRUD của Section
 router.post('/', sectionController.createSection);
 router.get('/', sectionController.getSections);

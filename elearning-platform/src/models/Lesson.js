@@ -1,18 +1,16 @@
-const mysql = require('mysql2/promise');
 const db = require('../config/db');
 
 class Lesson {
     static async create(lesson) {
         const [result] = await db.execute(
-            `INSERT INTO lessons (section_id, title, summary, video_url) 
-             VALUES (?, ?, ?, ?)`,
-            [lesson.section_id, lesson.title, lesson.summary, lesson.video_url]
+            'INSERT INTO lessons (section_id, course_id, title, summary, video_url, order_num) VALUES (?, ?, ?, ?, ?, ?)',
+            [lesson.section_id, lesson.course_id, lesson.title, lesson.summary, lesson.video_url, lesson.order_num]
         );
         return result.insertId;
     }
 
-    static async getAll() {
-        const [rows] = await db.execute('SELECT * FROM lessons');
+    static async getAll(sectionId) {
+        const [rows] = await db.execute('SELECT * FROM lessons WHERE section_id = ? ORDER BY order_num', [sectionId]);
         return rows;
     }
 
@@ -23,9 +21,8 @@ class Lesson {
 
     static async update(lesson_id, lesson) {
         await db.execute(
-            `UPDATE lessons SET section_id = ?, title = ?, summary = ?, video_url = ? 
-             WHERE lesson_id = ?`,
-            [lesson.section_id, lesson.title, lesson.summary, lesson.video_url, lesson_id]
+            'UPDATE lessons SET section_id = ?, course_id = ?, title = ?, summary = ?, video_url = ?, order_num = ? WHERE lesson_id = ?',
+            [lesson.section_id, lesson.course_id, lesson.title, lesson.summary, lesson.video_url, lesson.order_num, lesson_id]
         );
     }
 

@@ -11,7 +11,11 @@ exports.createSection = async (req, res) => {
 
 exports.getSections = async (req, res) => {
     try {
-        const sections = await Section.getAll();
+        const courseId = req.query.courseId;
+        if (!courseId) {
+            return res.status(400).json({ error: 'Course ID is required' });
+        }
+        const sections = await Section.getAll(courseId);
         res.status(200).json(sections);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -21,53 +25,14 @@ exports.getSections = async (req, res) => {
 exports.getSectionById = async (req, res) => {
     try {
         const section = await Section.getById(req.params.id);
+        if (!section) {
+            return res.status(404).json({ error: 'Section not found' });
+        }
         res.status(200).json(section);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
-
-// exports.getSectionsByCourseId = async (req, res) => {
-//     const courseId = req.params.courseId;
-//     try {
-//         // Lấy dữ liệu từ cơ sở dữ liệu
-//         const sections = await Section.getAll(); // Lấy tất cả các section
-
-//         // Lọc các sections theo courseId
-//         const filteredSections = sections.filter(section => section.course_id === parseInt(courseId));
-        
-//         res.json(filteredSections);
-//     } catch (error) {
-//         console.error('Error fetching sections:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
-
-exports.getSectionsByCourseId = async (req, res) => {
-    const courseId = parseInt(req.params.courseId, 10); // Chuyển đổi thành số nguyên
-
-    try {
-        // Lấy tất cả các section
-        const sections = await Section.getAll();
-
-        if (!Array.isArray(sections)) {
-            throw new Error('Dữ liệu trả về từ cơ sở dữ liệu không phải là mảng');
-        }
-
-        // Lọc các sections theo courseId
-        const filteredSections = sections.filter(section => section.course_id === courseId);
-
-        res.status(200).json(filteredSections); // Trả về danh sách các section đã lọc
-    } catch (error) {
-        console.error('Error fetching sections:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-};
-
-
-
-
-
 
 exports.updateSection = async (req, res) => {
     try {
