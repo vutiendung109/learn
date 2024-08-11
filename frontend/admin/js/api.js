@@ -44,10 +44,18 @@ export const api = {
     createUser: (data) => fetchData('/users', 'POST', data),
     updateUser: (userId, data) => fetchData(`/users/${userId}`, 'PUT', data),
     deleteUser: (userId) => fetchData(`/users/${userId}`, 'DELETE'),
+    // Thêm phương thức API để cập nhật quyền của người dùng
+    updateUserPermissions: (userId, data) => fetchData(`/users/${userId}/permissions`, 'PUT', data),
 
     // Course-related API methods
     getCourses: () => fetchData('/courses'),
+
+    //  getCourses: async () => {
+    //     const response = await fetchData('/courses');
+    //     return response.courses || response; // Điều chỉnh để trả về mảng trực tiếp
+    // },
     getCourse: (courseId) => fetchData(`/courses/${courseId}`),
+   
     createCourse: (data) => fetchData('/courses', 'POST', data),
     updateCourse: (courseId, data) => fetchData(`/courses/${courseId}`, 'PUT', data),
     deleteCourse: (courseId) => fetchData(`/courses/${courseId}`, 'DELETE'),

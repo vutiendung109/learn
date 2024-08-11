@@ -43,6 +43,7 @@
       - lesson.js
       - reviews.js
       - section.js
+      - user.js
     - server.js
 - find
 - frontend/
@@ -54,13 +55,14 @@
       - videos/
     - config/
     - css/
+      - course-cotent.css
       - course.css
       - dashboard.css
       - main.css
       - users.css
     - index.html
     - js/
-      - api.js
+      - course-content.js
       - courses.js
       - dashboard.js
       - lessons.js
@@ -69,6 +71,7 @@
       - users.js
     - lib/
     - pages/
+      - course-content.html
       - courses.html
       - dashboard.html
       - users.html
@@ -77,12 +80,90 @@
       - header.html
       - sidebar.html
   - client/
-    - index.html
-  - shared/
-    - api.js
+    - app.js
     - assets/
+      - css/
+        - courseDetail.css
+        - courses.css
+        - ctkh.css
+        - login.css
+        - main.css
+        - reset.css
+        - xemkh.css
+      - fonts/
+      - icons/
+        - chevron-left.svg
+        - chevron-right.svg
+        - code.svg
+        - facebook.svg
+        - instagram.svg
+        - linkedin.svg
+        - list.svg
+        - open-quotes.svg
+        - play.svg
+        - speaker.svg
+        - star.svg
+        - twitter.svg
+      - img/
+        - blog-1.jpg
+        - blog-2.jpg
+        - blog-3.jpg
+        - course-1.jpg
+        - course-2.jpg
+        - course-3.jpg
+        - courseMysql.png
+        - coursePython.png
+        - courseReact.png
+        - feature-1.jpg
+        - feature-2.jpg
+        - feature-3.jpg
+        - feedback-avatar-1.jpg
+        - feedback-avatar-2.jpg
+        - feedback-avatar-3.jpg
+        - hero-img.jpg
+        - hero-test.webp
+        - html-css.png
+        - js.png
+        - logo-white.svg
+        - logo.svg
+        - nodejs.png
+      - js/
+        - main.js
+      - video/
+        - video-demo.mp4
+    - components/
+      - AuthModal.js
+      - CourseItem.js
+      - Footer.js
+      - Header.js
+    - index.html
+    - main.js
+    - pages/
+      - Checkout.js
+      - CourseDetail.js
+      - CourseLearning.js
+      - CourseList.js
+      - Home.js
+      - Login.js
+      - Payment.js
+      - Profile.js
+      - Register.js
+    - utils/
+      - api.js
+      - auth.js
+      - router.js
+  - shared/
+    - assets/
+      - css/
+        - lore.css
       - img/
         - default-avatar.jpg
+    - js/
+      - api.js
+      - auth.js
+    - pages/
+      - login.html
+      - register.html
 - generate_structure.py
 - mysql-data/
   - #ib_16384_0.dblwr
@@ -119,7 +200,7 @@
     - #ib_redo38_tmp
     - #ib_redo39_tmp
     - #ib_redo40_tmp
-    - #ib_redo9
+    - #ib_redo41_tmp
   - #innodb_temp/
     - temp_1.ibt
     - temp_10.ibt
@@ -138,19 +219,24 @@
   - binlog.000004
   - binlog.000005
   - binlog.000006
+  - binlog.000007
+  - binlog.000008
+  - binlog.000009
+  - binlog.000010
+  - binlog.000011
+  - binlog.000012
+  - binlog.000013
+  - binlog.000014
+  - binlog.000015
   - binlog.index
   - ca-key.pem
   - ca.pem
   - client-cert.pem
   - client-key.pem
   - elearning_db/
-    - blog_posts.ibd
+    - categories.ibd
     - courses.ibd
-    - enrollments.ibd
     - lessons.ibd
-    - orders.ibd
-    - order_items.ibd
-    - reviews.ibd
     - sections.ibd
     - users.ibd
   - ibdata1
@@ -166,5 +252,7 @@
     - sys_config.ibd
   - undo_001
   - undo_002
+- package-lock.json
+- package.json
 - structure.md
 - structure.txt

@@ -18,6 +18,7 @@ async function loadUsers() {
                 <td>
                     <button class="action-btn edit-btn" data-id="${user.user_id}">Sửa</button>
                     <button class="action-btn delete-btn" data-id="${user.user_id}">Xóa</button>
+                    <button class="action-btn edit-permission-btn" data-id="${user.user_id}">Chỉnh sửa quyền</button>
                 </td>
             </tr>
         `).join('');
@@ -27,6 +28,9 @@ async function loadUsers() {
         });
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', () => deleteUser(btn.dataset.id));
+        });
+        document.querySelectorAll('.edit-permission-btn').forEach(btn => {
+            btn.addEventListener('click', () => openPermissionModal(btn.dataset.id));
         });
     } catch (error) {
         console.error('Lỗi khi tải danh sách người dùng:', error);
@@ -41,10 +45,8 @@ function openModal(title, userId = null) {
     document.getElementById('userId').value = userId;
 
     if (userId) {
-        // Nếu là chế độ chỉnh sửa, tải thông tin người dùng
         loadUser(userId);
     } else {
-        // Nếu là chế độ thêm mới, ẩn trường mật khẩu
         document.getElementById('password').value = '';
     }
 
@@ -53,6 +55,7 @@ function openModal(title, userId = null) {
 
 function closeModal() {
     document.getElementById('user-modal').style.display = 'none';
+    document.getElementById('permission-modal').style.display = 'none';
 }
 
 async function loadUser(userId) {
@@ -85,6 +88,52 @@ async function deleteUser(userId) {
     }
 }
 
+function openPermissionModal(userId) {
+    const modal = document.getElementById('permission-modal');
+    document.getElementById('editUserId').value = userId;
+    loadCourses(userId);
+    modal.style.display = 'block';
+}
+
+async function loadCourses(userId) {
+    try {
+        const response = await api.getCourses();// lấy đối tượng chứa mảng Course
+        const courses = response.courses;// lấy mảng courses từ đối tượng 
+        console.log(courses); // Kiểm tra dữ liệu trả về từ API
+
+        if (!Array.isArray(courses)) {
+            throw new Error('Dữ liệu không phải là mảng');
+        }
+
+        const user = await api.getUser(userId);
+        const enrolledCourses = user.enrollments ? user.enrollments.map(enrollment => enrollment.course_id) : [];
+
+        const courseSelect = document.getElementById('courses');
+        courseSelect.innerHTML = courses.map(course => `
+            <option value="${course.course_id}" ${enrolledCourses.includes(course.course_id) ? 'selected' : ''}>
+                ${course.title}
+            </option>
+        `).join('');
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách khóa học:', error);
+    }
+}
+
+document.getElementById('permission-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userId = document.getElementById('editUserId').value;
+    const selectedCourses = Array.from(document.getElementById('courses').selectedOptions).map(option => option.value);
+
+    try {
+        await api.updateUserPermissions(userId, { courses: selectedCourses });
+        alert('Cập nhật quyền thành công!');
+        document.getElementById('permission-modal').style.display = 'none';
+    } catch (error) {
+        console.error('Lỗi khi cập nhật quyền người dùng:', error);
+        alert('Có lỗi xảy ra khi cập nhật quyền.');
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();
 
@@ -92,7 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
         openModal('Thêm người dùng mới');
     });
 
-    document.querySelector('.close-btn').addEventListener('click', closeModal);
+    document.querySelectorAll('.close-btn').forEach(btn => {
+        btn.addEventListener('click', closeModal);
+    });
 
     document.getElementById('user-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -108,11 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             if (userId) {
-                // Cập nhật người dùng
                 await api.updateUser(userId, userData);
                 alert('Cập nhật thông tin người dùng thành công!');
             } else {
-                // Thêm người dùng mới
                 await api.createUser(userData);
                 alert('Người dùng đã được thêm thành công!');
             }

@@ -1,5 +1,3 @@
-//4.3
-
 const db = require('../config/db');
 
 class Enrollment {
@@ -37,6 +35,10 @@ class Enrollment {
       [courseId]
     );
     return rows;
+  }
+
+  static async deleteByUserId(userId) {
+    await db.execute('DELETE FROM enrollments WHERE user_id = ?', [userId]);
   }
 }
 

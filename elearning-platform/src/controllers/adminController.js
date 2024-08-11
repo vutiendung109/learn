@@ -2,7 +2,7 @@ const User = require('../models/User');
 const Course = require('../models/Course');
 const Review = require('../models/Review');
 const path = require('path');
-
+const Enrollment = require('../models/Enrollment'); // Thêm model này
 // const Discount = require('../models/Discount');
 // const Order = require('../models/Order');
 // const BlogPost = require('../models/BlogPost');
@@ -127,6 +127,22 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.updateUserPermissions = async (req, res) => {
+  const { userId } = req.params;
+  const { courses } = req.body;
+
+  try {
+      await Enrollment.deleteByUserId(userId); // Xóa các đăng ký cũ
+      for (const courseId of courses) {
+          await Enrollment.create({ userId, courseId });
+      }
+      res.json({ message: 'User permissions updated successfully' });
+  } catch (error) {
+      console.error('Error updating user permissions:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 exports.updateUserRole = async (req, res) => {
   const { userId } = req.params;
@@ -163,49 +179,28 @@ exports.deleteCourse = async (req, res) => {
   }
 };
 
-exports.getAllReviews = async (req, res) => {
-  try {
-    const reviews = await Review.getAll();
-    res.json(reviews);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-exports.deleteReview = async (req, res) => {
-  const { reviewId } = req.params;
-  try {
-    await Review.delete(reviewId);
-    res.json({ message: 'Review deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
-// // New functions for discounts
-// exports.getAllDiscounts = async (req, res) => {
+// exports.getAllReviews = async (req, res) => {
 //   try {
-//     const discounts = await Discount.getAll();
-//     res.json(discounts);
+//     const reviews = await Review.getAll();
+//     res.json(reviews);
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ message: 'Server error' });
 //   }
 // };
 
-// exports.createDiscount = async (req, res) => {
-//   // Implement this function
+// exports.deleteReview = async (req, res) => {
+//   const { reviewId } = req.params;
+//   try {
+//     await Review.delete(reviewId);
+//     res.json({ message: 'Review deleted successfully' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Server error' });
+//   }
 // };
 
-// exports.updateDiscount = async (req, res) => {
-//   // Implement this function
-// };
 
-// exports.deleteDiscount = async (req, res) => {
-//   // Implement this function
-// };
 
 // // New functions for orders
 // exports.getAllOrders = async (req, res) => {

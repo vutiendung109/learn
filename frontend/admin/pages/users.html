@@ -58,19 +58,6 @@
 
           <label for="profilePictureInput">Ảnh đại diện:</label>
           <input type="text" id="profilePicture" />
-         
-          <!-- <input
-            type="file"
-            id="profilePictureInput"
-            name="profilePicture"
-            accept="image/*"
-          />
-          <img
-            id="profilePicturePreview"
-            src="../../shared/assets/img/default-avatar.jpg"
-            alt="Ảnh đại diện"
-            width="100"
-          /> -->
 
           <label for="role">Vai trò:</label>
           <select id="role" name="role">
@@ -78,6 +65,22 @@
             <option value="admin">Quản trị viên</option>
           </select>
 
+          <button type="submit">Lưu</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal chỉnh sửa quyền -->
+    <div id="permission-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Chỉnh sửa quyền</h2>
+        <form id="permission-form">
+          <input type="hidden" id="editUserId" />
+          <label for="courses">Chọn khóa học:</label>
+          <select id="courses" name="courses[]" multiple>
+            <!-- Danh sách các khóa học sẽ được tải bằng JavaScript -->
+          </select>
           <button type="submit">Lưu</button>
         </form>
       </div>
