@@ -1,25 +1,9 @@
-import { Router } from './utils/router.js';
+//Sử dụng main.js làm điểm bắt đầu:
+// Trong main.js, bạn chỉ cần import app.js và gọi phương thức init của nó để bắt đầu ứng dụng.
 
-// import routes from './routes.js';
-import { Home } from './pages/Home.js';
-import { CourseList } from './pages/CourseList.js';
-import { CourseDetail } from './pages/CourseDetail.js';
-import { Profile } from './pages/Profile.js';
-import { Login } from './pages/Login.js'; 
-
-const routes = {
-    '/': Home,
-    '/courses': CourseList,
-    '/course/:id': CourseDetail,
-    '/profile': Profile,
-    '/login': Login,
-};
+import { App } from './app.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const app = document.getElementById('app');
-    const router = new Router(app, routes);
-    router.init();
+    const app = new App();
+    app.init();
 });
-
-
-

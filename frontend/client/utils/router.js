@@ -13,53 +13,67 @@ export class Router {
     // async handleRouteChange() {
     //     const hash = window.location.hash.slice(1) || '/';
     //     console.log('Handling route change for hash:', hash);
-    //     const route = this.findRoute(hash);
-
-    //     if (route) {
+    //     const routeInfo = this.findRoute(hash);
+        
+    //     if (routeInfo) {
     //         if (this.currentComponent && typeof this.currentComponent.unmount === 'function') {
-    //             this.currentComponent.unmount(); // Gọi hàm unmount nếu có
+    //             this.currentComponent.unmount();
     //         }
-
-    //         this.currentComponent = new route.component(); // Tạo instance mới của component
-
+            
+    //         const { component: Component, params } = routeInfo;
+            
+    //         if (typeof Component !== 'function') {
+    //             console.error('Invalid component for route:', hash);
+    //             return this.showErrorPage();
+    //         }
+            
+    //         this.currentComponent = new Component(params);
+            
     //         try {
-    //             await this.currentComponent.render(this.app); // Gọi hàm render của component
+    //             await this.currentComponent.render(this.app);
     //             console.log(`Rendered component for route: ${hash}`);
+                
+    //             // Cập nhật tiêu đề trang nếu component có thuộc tính title
+    //             if (this.currentComponent.title) {
+    //                 document.title = this.currentComponent.title;
+    //             }
+                
     //         } catch (error) {
     //             console.error('Error rendering component:', error);
-    //             this.showErrorPage(); // Hiển thị trang lỗi nếu render không thành công
+    //             this.showErrorPage();
     //         }
     //     } else {
-    //         this.showNotFoundPage(); // Hiển thị trang 404 nếu không tìm thấy route
+    //         this.showNotFoundPage();
     //     }
     // }
 
-    // findRoute(hash) {
-    //     for (const path in this.routes) {
-    //         // Thêm '!?' để cho phép có hoặc không có dấu '!' trong hash
-    //         const pathToRegex = new RegExp(`^${path.replace(/:\w+/g, '([^/]+)')}$`);
-    //         if (pathToRegex.test(hash)) {
-    //             return { path, component: this.routes[path] };
-    //         }
-    //     }
-    //     console.log('No route found for hash:', hash);
-    //     return null;
-    // }
     async handleRouteChange() {
         const hash = window.location.hash.slice(1) || '/';
         console.log('Handling route change for hash:', hash);
         const routeInfo = this.findRoute(hash);
-    
+        
         if (routeInfo) {
             if (this.currentComponent && typeof this.currentComponent.unmount === 'function') {
                 this.currentComponent.unmount();
             }
+            
             const { component: Component, params } = routeInfo;
-            this.currentComponent = new Component(params && params.id);
+            
+            if (typeof Component !== 'function') {
+                console.error('Invalid component for route:', hash);
+                return this.showErrorPage();
+            }
     
+            // Chỉ truyền đúng giá trị id cho component nếu có
+            this.currentComponent = new Component(params ? params.id : null);
+            
             try {
                 await this.currentComponent.render(this.app);
                 console.log(`Rendered component for route: ${hash}`);
+                
+                if (this.currentComponent.title) {
+                    document.title = this.currentComponent.title;
+                }
             } catch (error) {
                 console.error('Error rendering component:', error);
                 this.showErrorPage();
@@ -92,8 +106,6 @@ export class Router {
         }, {});
     }
     
-    
-
     showNotFoundPage() {
         this.app.innerHTML = '<h1>404 - Không tìm thấy trang</h1>';
         console.log('Displayed 404 not found page');

@@ -2,25 +2,6 @@ export class Home {
     async render(parent) {
         parent.innerHTML = `
             <main style="height: 5000px">
-                <header class="header fixed">
-                    <div class="main-content">
-                        <div class="body">
-                            <img src="/client/assets/img/logo.svg" alt="lesson." class="logo">
-                            <nav class="nav">
-                                <ul>
-                                    <li class="active"><a href="#!">Trang chủ</a></li>
-                                    <li><a href="#/courses">Khoá học</a></li>
-                                    <li><a href="#">Tin tức</a></li>
-                                    <li><a href="#">Về tác giả</a></li>
-                                </ul>
-                            </nav>
-                            <div class="action">
-                                <a href="#!" class="btn dkbtn">Đăng ký</a>
-                                <a href="/admin/login.html" class="btn dnbtn">Đăng nhập</a>
-                            </div>
-                        </div>
-                    </div>
-                </header>
                 <div class="hero">
                     <div class="main-content">
                         <div class="body">

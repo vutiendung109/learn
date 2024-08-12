@@ -1,4 +1,4 @@
-import Header from '../components/Header.js'; // Đảm bảo đã export component Header đúng cách
+import Header from '../components/Header.js'; // Đảm bảo đã import component Header đúng cách
 import { isAuthenticated } from '../utils/auth.js';
 
 export class CourseList {
@@ -39,13 +39,14 @@ export class CourseList {
         `).join('');
 
         this.container.innerHTML = `
-            ${Header()} <!-- Render header -->
-            ${searchBarHtml} <!-- Render search bar -->
+            
+            ${searchBarHtml} 
             <div class="courses-container">${coursesHtml}</div>
         `;
 
-        // Đặt thời gian chờ ngắn để đảm bảo rằng DOM đã được cập nhật
-        setTimeout(() => this.addSearchEventListener(courses), 100);
+        Header(); // Render header ngay sau khi DOM đã được cập nhật
+
+        this.addSearchEventListener(courses); // Gán sự kiện tìm kiếm sau khi DOM đã sẵn sàng
     }
 
     addSearchEventListener(courses) {
@@ -56,11 +57,27 @@ export class CourseList {
                 const filteredCourses = courses.filter(course =>
                     course.title.toLowerCase().includes(searchQuery)
                 );
-                this.renderCourses(filteredCourses); // Rerender the courses based on search
+                this.updateCoursesList(filteredCourses); // Rerender danh sách khoá học theo kết quả tìm kiếm
             });
         } else {
             console.error('Search input not found');
         }
+    }
+
+    updateCoursesList(filteredCourses) {
+        const coursesHtml = filteredCourses.map(course => `
+            <div class="course-item">
+                <img src="${course.image_url}" alt="${course.title}" class="course-image">
+                <div class="course-details">
+                    <h2>${course.title}</h2>
+                    <p>${course.description}</p>
+                    <span>Giá: ${course.regular_price} VND</span>
+                    <a href="#/course/${course.course_id}" class="btn view-course-btn">Xem chi tiết</a>
+                </div>
+            </div>
+        `).join('');
+
+        document.querySelector('.courses-container').innerHTML = coursesHtml;
     }
 
     renderError(message) {

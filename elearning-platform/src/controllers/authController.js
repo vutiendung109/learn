@@ -45,7 +45,7 @@ exports.login = async (req, res) => {
             { expiresIn: '1000h' }
         );
         
-        res.json({ token, userId: user.user_id, role: user.role });
+        res.json({ token, userId: user.user_id, role: user.role,avatarUrl: user.profile_picture });
     } catch (error) {
         console.error('Login error:', error); // Log chi tiết lỗi
         res.status(500).json({ message: 'Error logging in', error: error.message });

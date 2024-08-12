@@ -155,6 +155,20 @@ nav {
     margin-right: 25px;
 }
 
+.user-avatar {
+    width: 40px; /* Điều chỉnh kích thước chiều rộng */
+    height: 40px; /* Điều chỉnh kích thước chiều cao */
+    border-radius: 50%; /* Giúp avatar trở thành hình tròn */
+    vertical-align: middle; /* Căn giữa theo chiều dọc với văn bản */
+    margin-right: 16px; /* Tạo khoảng cách giữa avatar và nút Đăng xuất */
+}
+
+.header .action {
+    display: flex;
+    align-items: center; /* Căn giữa các phần tử theo chiều dọc */
+}
+
+
 /* Hero */
 
 .hero {
@@ -250,6 +264,8 @@ nav {
     padding: 64px 0 0 130px;
 
 }
+
+
 
 
 .hero .desc {

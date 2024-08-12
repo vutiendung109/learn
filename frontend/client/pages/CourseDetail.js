@@ -1,9 +1,10 @@
-import Header from '../components/Header.js'; // Đảm bảo đã export component Header đúng cách
+import Header from '../components/Header.js';
+import { isAuthenticated } from '../utils/auth.js';
 
 export class CourseDetail {
     constructor(courseId) {
         this.courseId = courseId;
-        this.container = document.getElementById('app'); // Đảm bảo container này tồn tại trong HTML của bạn
+        this.container = document.getElementById('app');
     }
 
     async fetchCourseDetail() {
@@ -36,7 +37,11 @@ export class CourseDetail {
                 </div>
             </div>
         `;
-        this.container.innerHTML = `${Header()}<div class="course-detail-container">${courseHtml}</div>`;
+        // Thay vì chèn trực tiếp `Header()` vào chuỗi HTML, hãy đảm bảo `Header` được render một cách độc lập
+        Header(); // Gọi hàm Header để render header
+
+        // Sau đó, render nội dung khóa học
+        this.container.innerHTML = `<div class="course-detail-container">${courseHtml}</div>`;
     }
 
     renderError(message) {

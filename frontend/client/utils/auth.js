@@ -2,7 +2,7 @@ import { api } from './api.js';
 
 export async function loginClient(username, password) {
     try {
-        const response = await api.post('/auth/login', { username, password });
+        const response = await api.login({ username, password });
 
         if (response.token && response.avatarUrl) {
             localStorage.setItem('token', response.token);
@@ -21,10 +21,11 @@ export function isAuthenticated() {
 }
 
 export function getUserAvatar() {
-    return localStorage.getItem('avatarUrl') || './assets/img/default-avatar.png';
+    return localStorage.getItem('avatarUrl') || '/shared/assets/img/default-avatar.png';
 }
 
 export function logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('avatarUrl');
+    window.location.href = '/';
 }
