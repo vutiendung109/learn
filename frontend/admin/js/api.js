@@ -74,4 +74,9 @@ export const api = {
     createLesson: (data) => fetchData('/lessons', 'POST', data),
     updateLesson: (lessonId, data) => fetchData(`/lessons/${lessonId}`, 'PUT', data),
     deleteLesson: (lessonId) => fetchData(`/lessons/${lessonId}`, 'DELETE'),
+
+    //quyền xem kh : 
+    removeUserPermission: (userId, courseId) => fetchData(`/users/${userId}/permissions/${courseId}`, 'DELETE'),
+    getUserPermissions: (userId) => fetchData(`/users/${userId}/permissions`),  // Thêm phương thức này
+    updateUserPermissions: (userId, data) => fetchData(`/users/${userId}/permissions`, 'PUT', data),
 };

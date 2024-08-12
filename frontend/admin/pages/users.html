@@ -70,21 +70,42 @@
       </div>
     </div>
 
-    <!-- Modal chỉnh sửa quyền -->
-    <div id="permission-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <h2>Chỉnh sửa quyền</h2>
-        <form id="permission-form">
-          <input type="hidden" id="editUserId" />
-          <label for="courses">Chọn khóa học:</label>
-          <select id="courses" name="courses[]" multiple>
-            <!-- Danh sách các khóa học sẽ được tải bằng JavaScript -->
-          </select>
-          <button type="submit">Lưu</button>
-        </form>
+<!-- Modal chỉnh sửa quyền -->
+<div id="permission-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2>Chỉnh sửa quyền</h2>
+    <form id="permission-form">
+      <input type="hidden" id="editUserId" />
+      
+      <!-- Bảng hiện danh sách khóa học đã mua -->
+      <h3>Danh sách khóa học đã mua</h3>
+      <table id="purchased-courses-table">
+        <thead>
+          <tr>
+            <th>Tên khóa học</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Danh sách khóa học sẽ được thêm vào đây bằng JavaScript -->
+        </tbody>
+      </table>
+      
+      <!-- Nút để thêm quyền mới -->
+      <button type="button" id="add-permission-btn">Thêm quyền</button>
+      
+      <!-- Chọn khóa học để thêm quyền -->
+      <div id="add-permission-section" style="display: none;">
+        <label for="all-courses">Chọn khóa học:</label>
+        <select id="all-courses" multiple>
+          <!-- Danh sách các khóa học sẽ được tải bằng JavaScript -->
+        </select>
+        <button type="button" id="save-permission-btn">Lưu quyền</button>
       </div>
-    </div>
+    </form>
+  </div>
+</div>
 
     <script src="../js/main.js"></script>
     <script src="../js/users.js" type="module"></script>

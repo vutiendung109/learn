@@ -24,7 +24,7 @@ async function fetchData(endpoint, method = 'GET', data = null) {
             const contentType = response.headers.get('content-type');
             const responseText = await response.text();
             console.error('Response text:', responseText);
-
+        
             if (contentType && contentType.includes('application/json')) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
@@ -32,6 +32,7 @@ async function fetchData(endpoint, method = 'GET', data = null) {
                 throw new Error(`Unexpected response format! status: ${response.status} - ${responseText}`);
             }
         }
+        
 
         const responseText = await response.text();
         return responseText ? JSON.parse(responseText) : {};
@@ -76,4 +77,9 @@ export const api = {
     createLesson: (data) => fetchData('/lessons', 'POST', data),
     updateLesson: (lessonId, data) => fetchData(`/lessons/${lessonId}`, 'PUT', data),
     deleteLesson: (lessonId) => fetchData(`/lessons/${lessonId}`, 'DELETE'),
+
+    // quyền khoá học 
+    hasPermission: async (userId, courseId) => {
+        return await fetchData(`/courses/${courseId}/permission?userId=${userId}`, 'GET');
+    },
 };

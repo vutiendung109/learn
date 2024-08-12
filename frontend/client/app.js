@@ -5,6 +5,7 @@ import { CourseDetail } from './pages/CourseDetail.js';
 import { Profile } from './pages/Profile.js';
 import { Login } from './pages/Login.js';
 import Header from './components/Header.js'; // Import Header
+import { CourseLearning } from './pages/CourseLearning.js';
 // Nếu có Footer thì import tương tự
 // import Footer from './components/Footer.js';
 
@@ -12,6 +13,7 @@ const routes = {
     '/': Home,
     '/courses': CourseList,
     '/course/:id': CourseDetail,
+     '/course/:id/view': CourseLearning,
     '/profile': Profile,
     '/login': Login,
 };

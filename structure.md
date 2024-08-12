@@ -58,10 +58,13 @@
       - course-cotent.css
       - course.css
       - dashboard.css
+      - lore.css
       - main.css
       - users.css
     - index.html
     - js/
+      - api.js
+      - auth.js
       - course-content.js
       - courses.js
       - dashboard.js
@@ -70,11 +73,13 @@
       - sections.js
       - users.js
     - lib/
+    - login.html
     - pages/
       - course-content.html
       - courses.html
       - dashboard.html
       - users.html
+    - register.html
     - templates/
       - footer.html
       - header.html
@@ -155,15 +160,10 @@
   - shared/
     - assets/
       - css/
-        - lore.css
       - img/
         - default-avatar.jpg
     - js/
-      - api.js
-      - auth.js
     - pages/
-      - login.html
-      - register.html
 - generate_structure.py
 - mysql-data/
   - #ib_16384_0.dblwr
@@ -228,6 +228,10 @@
   - binlog.000013
   - binlog.000014
   - binlog.000015
+  - binlog.000016
+  - binlog.000017
+  - binlog.000018
+  - binlog.000019
   - binlog.index
   - ca-key.pem
   - ca.pem
@@ -236,6 +240,7 @@
   - elearning_db/
     - categories.ibd
     - courses.ibd
+    - enrollments.ibd
     - lessons.ibd
     - sections.ibd
     - users.ibd

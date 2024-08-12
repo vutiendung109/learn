@@ -62,6 +62,64 @@ class User {
     }
   }
 
+
+  static async getUserEnrollments(userId) {
+    try {
+        const [rows] = await db.execute(`
+            SELECT c.course_id, c.title 
+            FROM enrollments e 
+            JOIN courses c ON e.course_id = c.course_id 
+            WHERE e.user_id = ?
+        `, [userId]);
+        return rows;
+    } catch (error) {
+        console.error('Error fetching user enrollments:', error);
+        throw error;
+    }
+}
+
+
+  static async updateUserPermissions(userId, courseIds) {
+    try {
+        for (const courseId of courseIds) {
+            // Kiểm tra xem quyền này đã tồn tại hay chưa
+            const [existing] = await db.execute(
+                'SELECT * FROM enrollments WHERE user_id = ? AND course_id = ?',
+                [userId, courseId]
+            );
+
+            if (existing.length === 0) {
+                // Nếu chưa có thì mới thêm quyền
+                await db.execute(
+                    'INSERT INTO enrollments (user_id, course_id, enrollment_date) VALUES (?, ?, NOW())',
+                    [userId, courseId]
+                );
+            }
+        }
+
+        return true; // Trả về true nếu cập nhật thành công
+    } catch (error) {
+        console.error('Error in updateUserPermissions:', error);
+        throw error;
+    }
+}
+
+static async removeUserPermission(userId, courseId) {
+  try {
+      await db.execute(
+          'DELETE FROM enrollments WHERE user_id = ? AND course_id = ?',
+          [userId, courseId]
+      );
+
+      return true; // Trả về true nếu xóa thành công
+  } catch (error) {
+      console.error('Error in removeUserPermission:', error);
+      throw error;
+  }
+}
+
+
+
 }
 
 

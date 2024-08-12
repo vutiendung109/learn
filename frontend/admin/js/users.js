@@ -88,51 +88,120 @@ async function deleteUser(userId) {
     }
 }
 
-function openPermissionModal(userId) {
+async function openPermissionModal(userId) {
     const modal = document.getElementById('permission-modal');
     document.getElementById('editUserId').value = userId;
-    loadCourses(userId);
-    modal.style.display = 'block';
+    
+    try {
+        const user = await api.getUserPermissions(userId);
+        const purchasedCourses = user.enrollments ? user.enrollments : [];
+
+        const tableBody = document.querySelector('#purchased-courses-table tbody');
+        tableBody.innerHTML = purchasedCourses.map(course => `
+            <tr>
+                <td>${course.title}</td>
+                <td>
+                    <button class="action-btn remove-course-btn" data-course-id="${course.course_id}">Xóa</button>
+                </td>
+            </tr>
+        `).join('');
+
+        document.querySelectorAll('.remove-course-btn').forEach(btn => {
+            btn.addEventListener('click', () => removeCourse(userId, btn.dataset.courseId));
+        });
+
+        modal.style.display = 'block';
+        
+        // Thêm event listener cho nút "Thêm quyền" ở đây
+        document.getElementById('add-permission-btn').addEventListener('click', loadAllCourses);
+        
+        // Ẩn phần "add-permission-section" ban đầu
+        const addPermissionSection = document.getElementById('add-permission-section');
+        if (addPermissionSection) {
+            addPermissionSection.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách quyền của người dùng:', error);
+    }
 }
 
-async function loadCourses(userId) {
+async function loadAllCourses() {
     try {
-        const response = await api.getCourses();// lấy đối tượng chứa mảng Course
-        const courses = response.courses;// lấy mảng courses từ đối tượng 
-        console.log(courses); // Kiểm tra dữ liệu trả về từ API
+        const response = await api.getCourses();
+        const allCourses = response.courses || response;
 
-        if (!Array.isArray(courses)) {
-            throw new Error('Dữ liệu không phải là mảng');
+        const courseSelect = document.getElementById('all-courses');
+        courseSelect.innerHTML = allCourses.map(course => `
+            <option value="${course.course_id}">${course.title}</option>
+        `).join('');
+
+        const addPermissionSection = document.getElementById('add-permission-section');
+        if (addPermissionSection) {
+            addPermissionSection.style.display = 'block';
+        } else {
+            console.error("Không tìm thấy phần tử 'add-permission-section'");
         }
 
-        const user = await api.getUser(userId);
-        const enrolledCourses = user.enrollments ? user.enrollments.map(enrollment => enrollment.course_id) : [];
-
-        const courseSelect = document.getElementById('courses');
-        courseSelect.innerHTML = courses.map(course => `
-            <option value="${course.course_id}" ${enrolledCourses.includes(course.course_id) ? 'selected' : ''}>
-                ${course.title}
-            </option>
-        `).join('');
+        document.getElementById('save-permission-btn').addEventListener('click', saveNewPermissions);
     } catch (error) {
         console.error('Lỗi khi tải danh sách khóa học:', error);
     }
 }
 
-document.getElementById('permission-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+async function saveNewPermissions() {
     const userId = document.getElementById('editUserId').value;
-    const selectedCourses = Array.from(document.getElementById('courses').selectedOptions).map(option => option.value);
+    const selectedCourses = Array.from(document.getElementById('all-courses').selectedOptions).map(option => option.value);
 
     try {
         await api.updateUserPermissions(userId, { courses: selectedCourses });
-        alert('Cập nhật quyền thành công!');
-        document.getElementById('permission-modal').style.display = 'none';
+        alert('Thêm quyền thành công!');
+        const addPermissionSection = document.getElementById('add-permission-section');
+        if (addPermissionSection) {
+            addPermissionSection.style.display = 'none';
+        }
+        loadPurchasedCourses(userId);
     } catch (error) {
-        console.error('Lỗi khi cập nhật quyền người dùng:', error);
-        alert('Có lỗi xảy ra khi cập nhật quyền.');
+        console.error('Lỗi khi thêm quyền:', error);
+        alert('Có lỗi xảy ra khi thêm quyền.');
     }
-});
+}
+
+async function loadPurchasedCourses(userId) {
+    try {
+        const user = await api.getUserPermissions(userId);
+        const purchasedCourses = user.enrollments ? user.enrollments : [];
+
+        const tableBody = document.querySelector('#purchased-courses-table tbody');
+        tableBody.innerHTML = purchasedCourses.map(course => `
+            <tr>
+                <td>${course.title}</td>
+                <td>
+                    <button class="action-btn remove-course-btn" data-course-id="${course.course_id}">Xóa</button>
+                </td>
+            </tr>
+        `).join('');
+
+        document.querySelectorAll('.remove-course-btn').forEach(btn => {
+            btn.addEventListener('click', () => removeCourse(userId, btn.dataset.courseId));
+        });
+    } catch (error) {
+        console.error('Lỗi khi tải danh sách khóa học đã mua:', error);
+        alert('Có lỗi xảy ra khi tải danh sách khóa học. Vui lòng thử lại sau.');
+    }
+}
+
+async function removeCourse(userId, courseId) {
+    if (confirm('Bạn có chắc chắn muốn xóa khóa học này khỏi quyền của người dùng?')) {
+        try {
+            await api.removeUserPermission(userId, courseId);
+            alert('Xóa khóa học thành công!');
+            await loadPurchasedCourses(userId);
+        } catch (error) {
+            console.error('Lỗi khi xóa khóa học:', error);
+            alert('Có lỗi xảy ra khi xóa khóa học.');
+        }
+    }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();

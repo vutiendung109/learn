@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/User'); // Chỉ khai báo một lần ở đây
 const Course = require('../models/Course');
 const Review = require('../models/Review');
 const path = require('path');
@@ -6,8 +6,6 @@ const Enrollment = require('../models/Enrollment'); // Thêm model này
 // const Discount = require('../models/Discount');
 // const Order = require('../models/Order');
 // const BlogPost = require('../models/BlogPost');
-
-
 
 const bcrypt = require('bcrypt'); // Thêm thư viện bcrypt để hash mật khẩu
 
@@ -49,9 +47,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-
-
-
 exports.deleteUser = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -80,7 +75,6 @@ exports.getUser = async (req, res) => {
 };
 
 // Cập nhật thông tin người dùng
-
 exports.getUserById = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -95,7 +89,6 @@ exports.getUserById = async (req, res) => {
       res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 exports.updateUser = async (req, res) => {
   const { userId } = req.params;
@@ -127,22 +120,61 @@ exports.updateUser = async (req, res) => {
   }
 };
 
-exports.updateUserPermissions = async (req, res) => {
+// cấp quyền
+//lấy danh sách 
+exports.getUserPermissions = async (req, res) => {
   const { userId } = req.params;
-  const { courses } = req.body;
-
   try {
-      await Enrollment.deleteByUserId(userId); // Xóa các đăng ký cũ
-      for (const courseId of courses) {
-          await Enrollment.create({ userId, courseId });
+      const user = await User.findById(userId);
+      if (user) {
+          const enrollments = await User.getUserEnrollments(userId); // Giả sử bạn có phương thức lấy quyền (enrollments)
+          user.enrollments = enrollments;
+          res.json(user);
+      } else {
+          res.status(404).json({ message: 'User not found' });
       }
-      res.json({ message: 'User permissions updated successfully' });
   } catch (error) {
-      console.error('Error updating user permissions:', error);
+      console.error('Error fetching user permissions:', error);
       res.status(500).json({ message: 'Server error' });
   }
 };
 
+
+exports.updatePermissions = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { courses } = req.body;
+
+        if (!courses || !Array.isArray(courses)) {
+            return res.status(400).json({ message: 'Invalid data' });
+        }
+
+        // Logic để cập nhật quyền của người dùng (enroll các khóa học mới)
+        await User.updateUserPermissions(userId, courses);
+
+        res.status(200).json({ message: 'Permissions updated successfully' });
+    } catch (error) {
+        console.error('Error updating user permissions:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+//xoa quyen xem kh
+exports.removePermission = async (req, res) => {
+  const { userId, courseId } = req.params;
+
+  try {
+      const success = await User.removeUserPermission(userId, courseId);
+      if (success) {
+          res.status(200).json({ message: 'Permission removed successfully' });
+      } else {
+          res.status(400).json({ message: 'Failed to remove permission' });
+      }
+  } catch (error) {
+      console.error('Error removing permission:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+};
 
 exports.updateUserRole = async (req, res) => {
   const { userId } = req.params;
@@ -155,8 +187,6 @@ exports.updateUserRole = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
 
 exports.getAllCourses = async (req, res) => {
   try {
@@ -179,63 +209,18 @@ exports.deleteCourse = async (req, res) => {
   }
 };
 
-// exports.getAllReviews = async (req, res) => {
-//   try {
-//     const reviews = await Review.getAll();
-//     res.json(reviews);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
+exports.hasPermission = async (req, res) => {
+  const { userId, courseId } = req.params;
 
-// exports.deleteReview = async (req, res) => {
-//   const { reviewId } = req.params;
-//   try {
-//     await Review.delete(reviewId);
-//     res.json({ message: 'Review deleted successfully' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-
-
-// // New functions for orders
-// exports.getAllOrders = async (req, res) => {
-//   try {
-//     const orders = await Order.getAll();
-//     res.json(orders);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// exports.updateOrderStatus = async (req, res) => {
-//   // Implement this function
-// };
-
-// // New functions for blog posts
-// exports.getAllBlogPosts = async (req, res) => {
-//   try {
-//     const posts = await BlogPost.getAll();
-//     res.json(posts);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error' });
-//   }
-// };
-
-// exports.createBlogPost = async (req, res) => {
-//   // Implement this function
-// };
-
-// exports.updateBlogPost = async (req, res) => {
-//   // Implement this function
-// };
-
-// exports.deleteBlogPost = async (req, res) => {
-//   // Implement this function
-// };
+  try {
+      const enrollment = await Enrollment.findByUserAndCourse(userId, courseId);
+      if (enrollment) {
+          res.status(200).json(true); // Có quyền
+      } else {
+          res.status(403).json(false); // Không có quyền
+      }
+  } catch (error) {
+      console.error('Lỗi khi kiểm tra quyền:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+};

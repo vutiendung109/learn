@@ -1,4 +1,6 @@
 const Course = require('../models/Course');
+const Enrollment = require('../models/Enrollment');
+
 
 exports.createCourse = async (req, res) => {
   try {
@@ -102,5 +104,47 @@ exports.searchCourses = async (req, res) => {
   } catch (error) {
     console.error('Lỗi khi tìm kiếm khóa học:', error);
     res.status(500).json({ message: 'Lỗi server khi tìm kiếm khóa học', error: error.message });
+  }
+};
+
+//quyền xem ngay
+
+
+exports.checkPermission = async (req, res) => {
+    const { userId } = req.query; // Lấy userId từ query params
+    const { courseId } = req.params;
+
+    try {
+        // Kiểm tra nếu userId đã đăng ký khóa học này
+        const enrollment = await Enrollment.findByUserAndCourse(userId, courseId);
+
+        const hasPermission = !!enrollment; // Trả về true nếu có quyền, ngược lại false
+        res.json({ hasPermission });
+    } catch (error) {
+        console.error('Error checking permission:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+//xử lí trong trang hiện video bài học 
+exports.getCourseContent = async (req, res) => {
+  const { courseId } = req.params;
+
+  try {
+      const course = await Course.findById(courseId);
+      const sections = await Section.findByCourseId(courseId);
+
+      for (let section of sections) {
+          section.lessons = await Lesson.findBySectionId(section.section_id);
+      }
+
+      res.json({
+          course,
+          sections
+      });
+  } catch (error) {
+      console.error('Error fetching course content:', error);
+      res.status(500).json({ message: 'Server error' });
   }
 };

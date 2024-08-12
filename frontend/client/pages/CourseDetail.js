@@ -1,31 +1,26 @@
 import Header from '../components/Header.js';
 import { api } from '../utils/api.js';
 
-
-
 export class CourseDetail {
     constructor(courseId) {
         this.courseId = courseId;
-        this.container = document.getElementById('app'); // Đảm bảo container này tồn tại trong HTML của bạn
+        this.container = document.getElementById('app');
     }
 
     async fetchCourseDetail() {
         try {
-            const response = await fetch(`http://localhost:5000/api/courses/${this.courseId}`);
-            if (!response.ok) {
-                throw new Error('Không thể tải chi tiết khóa học');
-            }
-            const course = await response.json();
+            const course = await api.getCourse(this.courseId);
+            console.log('Course data:', course); // Log dữ liệu khóa học
             await this.renderCourseDetail(course);
         } catch (error) {
+            console.error('Error fetching course detail:', error);
             this.renderError(error.message);
         }
     }
 
     async fetchCourseSections(courseId) {
         try {
-            const sections = await api.getSections(courseId);
-            return sections || [];
+            return await api.getSections(courseId);
         } catch (error) {
             console.error('Error loading sections:', error);
             return [];
@@ -34,8 +29,7 @@ export class CourseDetail {
 
     async fetchCourseLessons(sectionId) {
         try {
-            const lessons = await api.getLessons(sectionId);
-            return lessons || [];
+            return await api.getLessons(sectionId);
         } catch (error) {
             console.error('Error loading lessons:', error);
             return [];
@@ -43,25 +37,30 @@ export class CourseDetail {
     }
 
     async renderCourseDetail(course) {
-        const sections = await this.fetchCourseSections(course.course_id);
-        let sectionsHtml = '';
-
-        for (let section of sections) {
-            let lessonsHtml = '';
-
-            sectionsHtml += `
-                <div class="section-item">
-                    <h3 class="section-title" data-id="${section.section_id}">
-                        ${section.order_num}. ${section.title}
-                    </h3>
-                    <ul class="lesson-list" id="lessons-${section.section_id}">
-                        ${lessonsHtml}
-                    </ul>
-                </div>
-            `;
-        }
-
-        const courseHtml = `
+        try {
+            const sections = await this.fetchCourseSections(course.course_id);
+            console.log('Sections:', sections);
+            let sectionsHtml = '';
+    
+            for (let section of sections) {
+                sectionsHtml += `
+                    <div class="section-item">
+                        <h3 class="section-title" data-id="${section.section_id}">
+                            ${section.order_num}. ${section.title}
+                        </h3>
+                        <ul class="lesson-list" id="lessons-${section.section_id}"></ul>
+                    </div>
+                `;
+            }
+    
+            // Lấy userId từ localStorage hoặc sessionStorage
+            const userId = localStorage.getItem('userId') || sessionStorage.getItem('userId');
+            
+            // Kiểm tra quyền xem khóa học
+            const { hasPermission } = await api.hasPermission(userId, course.course_id);
+            console.log('Has permission:', hasPermission);
+    
+            const courseHtml = `
             <div class="course-detail-container">
                 <div class="course-header">
                     <div class="course-description">
@@ -70,7 +69,10 @@ export class CourseDetail {
                         <p class="course-info">
                             Giá: <span class="course-price">${course.regular_price} VND</span>
                         </p>
-                        <a href="#!" class="btn buy-btn">Mua khoá học</a>
+                        ${hasPermission 
+                            ? `<a href="#/course/${course.course_id}/view" class="btn view-now-btn">Xem ngay</a>`  // Thay đổi href để chuyển hướng đúng route
+                            : `<a href="/payment" class="btn buy-btn">Mua khoá học</a>`
+                        }
                     </div>
                     <div class="course-image">
                         <img src="${course.image_url}" alt="${course.title}" />
@@ -82,13 +84,19 @@ export class CourseDetail {
                 </div>
             </div>
         `;
-
-        this.container.innerHTML = courseHtml;
-
-        Header(); // Gọi hàm Header() sau khi DOM đã được cập nhật
-
-        this.addSectionToggleEvents();
+        
+    
+            this.container.innerHTML = courseHtml;
+    
+            Header();
+    
+            this.addSectionToggleEvents();
+        } catch (error) {
+            console.error('Error rendering course detail:', error);
+            this.renderError('Có lỗi xảy ra khi hiển thị chi tiết khóa học');
+        }
     }
+    
 
     addSectionToggleEvents() {
         document.querySelectorAll('.section-title').forEach(titleElement => {
@@ -119,4 +127,3 @@ export class CourseDetail {
         await this.fetchCourseDetail();
     }
 }
-

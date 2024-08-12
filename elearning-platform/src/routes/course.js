@@ -31,6 +31,10 @@ router.get('/:id', courseController.getCourseById);
 router.put('/:id', authMiddleware, courseController.updateCourse);
 router.delete('/:id', authMiddleware, courseController.deleteCourse);
 
+router.get('/:courseId/permission', courseController.checkPermission);
+
+// Trang xem khoá học
+router.get('/:courseId/content', courseController.getCourseContent);
 
 
 module.exports = router;

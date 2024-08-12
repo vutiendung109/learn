@@ -16,6 +16,11 @@ router.put('/:userId', adminController.updateUser);
 
 // Xóa người dùng
 router.delete('/:userId', adminController.deleteUser);
-router.put('/:userId/permissions', adminController.updateUserPermissions);
+
+router.put('/:userId/permissions', adminController.updatePermissions);
+router.delete('/:userId/permissions/:courseId', adminController.removePermission);
+router.get('/:userId/permissions', adminController.getUserPermissions);
+
+router.get('/:userId/permissions/:courseId', adminController.hasPermission);
 
 module.exports = router;

@@ -113,3 +113,14 @@
     font-size: 16px;
     color: #555;
 }
+
+/* nút xem ngay */
+/* Thêm vào cuối file CSS */
+.view-now-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 4px;
+}
