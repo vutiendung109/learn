@@ -1,38 +1,3 @@
-// const API_URL = 'http://localhost:5000/api';
-
-// export const api = {
-//     get: async (endpoint) => {
-//         const token = localStorage.getItem('token');
-//         const response = await fetch(`${API_URL}${endpoint}`, {
-//             headers: {
-//                 'Authorization': `Bearer ${token}`
-//             }
-//         });
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         return await response.json();
-//     },
-//     post: async (endpoint, data) => {
-//         const token = localStorage.getItem('token');
-//         const response = await fetch(`${API_URL}${endpoint}`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`
-//             },
-//             body: JSON.stringify(data)
-//         });
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         return await response.json();
-//     },
-//     // Thêm các phương thức khác như put, delete nếu cần
-// };
-
-
-
 const API_BASE_URL = 'http://localhost:5000/api';
 
 async function fetchData(endpoint, method = 'GET', data = null) {
@@ -56,8 +21,16 @@ async function fetchData(endpoint, method = 'GET', data = null) {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            const contentType = response.headers.get('content-type');
+            const responseText = await response.text();
+            console.error('Response text:', responseText);
+
+            if (contentType && contentType.includes('application/json')) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            } else {
+                throw new Error(`Unexpected response format! status: ${response.status} - ${responseText}`);
+            }
         }
 
         const responseText = await response.text();
@@ -67,6 +40,7 @@ async function fetchData(endpoint, method = 'GET', data = null) {
         throw error;
     }
 }
+
 
 export const api = {
     // User authentication
