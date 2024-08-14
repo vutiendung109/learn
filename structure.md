@@ -91,8 +91,10 @@
         - courseDetail.css
         - courses.css
         - ctkh.css
+        - header.css
         - login.css
         - main.css
+        - payment.css
         - reset.css
         - xemkh.css
       - fonts/
@@ -132,6 +134,7 @@
         - logo-white.svg
         - logo.svg
         - nodejs.png
+        - qr.jpg
       - js/
         - main.js
       - video/

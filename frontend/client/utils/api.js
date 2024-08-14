@@ -16,6 +16,8 @@ async function fetchData(endpoint, method = 'GET', data = null) {
     if (data) {
         options.body = JSON.stringify(data);
     }
+    const url = `${API_BASE_URL}${endpoint}`;
+    console.log(`Fetching URL: ${url}`);  // Log URL để kiểm tra
 
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
@@ -82,4 +84,7 @@ export const api = {
     hasPermission: async (userId, courseId) => {
         return await fetchData(`/courses/${courseId}/permission?userId=${userId}`, 'GET');
     },
+
+    getCourseContent: (courseId) => fetchData(`/courses/${courseId}/content`, 'GET'),
+
 };

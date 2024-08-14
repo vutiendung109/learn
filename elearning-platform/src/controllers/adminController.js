@@ -223,4 +223,7 @@ exports.hasPermission = async (req, res) => {
       console.error('Lỗi khi kiểm tra quyền:', error);
       res.status(500).json({ message: 'Server error' });
   }
+
+  
 };
+

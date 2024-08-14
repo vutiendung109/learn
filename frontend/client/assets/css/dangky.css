@@ -1,0 +1,43 @@
+/* Container của form đăng ký */
+.register-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Tiêu đề của form đăng ký */
+.register-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Các nhóm ô nhập liệu */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Nhãn của các ô nhập liệu */
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Các ô nhập liệu */
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+/* Thông báo lỗi */
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}

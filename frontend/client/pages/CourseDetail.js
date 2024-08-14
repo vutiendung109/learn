@@ -71,8 +71,7 @@ export class CourseDetail {
                         </p>
                         ${hasPermission 
                             ? `<a href="#/course/${course.course_id}/view" class="btn view-now-btn">Xem ngay</a>`  // Thay đổi href để chuyển hướng đúng route
-                            : `<a href="/payment" class="btn buy-btn">Mua khoá học</a>`
-                        }
+                            : `<a href="#/payment?courseId=${course.course_id}" class="btn buy-btn">Mua khoá học</a>`                        }
                     </div>
                     <div class="course-image">
                         <img src="${course.image_url}" alt="${course.title}" />

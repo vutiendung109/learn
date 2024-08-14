@@ -1,157 +1,58 @@
-* {
-    box-sizing: border-box;
-}
-
-:root {
-    --font-heading: Sen, sans-serif;
-    --primary-color: #ffb900;
-}
-
-html {
-    font-size: 62.5%;
-}
-
-body {
-    font-size: 1.6rem;
-    font-family: "Poppins", sans-serif;
-}
-
-a {
-    text-decoration: none;
-}
-
-.main-content {
-    width: 1170px;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: calc(100% - 48px);
-}
-
-.btn {
-    display: inline-block;
-    min-width: 118px;
-    font-weight: 600;
-    font-size: 1.6rem;
-    line-height: 50px;
-    text-align: center;
-    color: #FFFFFF;
-    padding: 0 16px;
-    background: #171100;
-    border-radius: 999px;
-}
-
-.btn:hover {
-    opacity: 0.9;
-    cursor: pointer;
-}
-
-.header {
-    background: #fffcf4;
-}
-
-.header.fixed {
-    position: sticky;
-    top: -28px;
-    z-index: 1;
-}
-
-.header .body {
+.course-learning-container {
     display: flex;
-    align-items: center;
-    padding: 36px 0px 8px;
+    height: 80vh; /* Chiều cao chiếm toàn bộ màn hình */
 }
 
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-left: 20px;
-}
-
-.logo {
-    margin-right: auto;
-}
-
-nav {
-    margin-left: auto;
-}
-
-.nav ul {
-    display: flex;
-}
-
-.nav a {
-    position: relative;
-    padding: 8px 21px;
-    font-size: 1.6rem;
-    color: #5f5b53;
-}
-
-.nav a:hover,
-.nav li.active a {
-    text-shadow: 1px 0 0 currentColor; 
-    color: #000;
-}
-
-.nav li.active a::after {
-    content: "";
-    position: absolute;
-    left: 23px;
-    bottom: 6px;
-    display: block;
-    width: 18px;
-    height: 2px;
-    background: #000;
-    border-radius: 1px;
-}
-
-/* Course Content */
-.course-content {
-    padding: 40px 0;
-    background: #f8f8f8;
-}
-
-.course-container {
-    display: flex;
-}
-
-.lesson-list {
-    width: 25%;
-    background: #fff;
-    padding: 20px;
-    border-right: 1px solid #ccc;
-}
-
-.lesson-list ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.lesson-list li {
-    margin-bottom: 10px;
-}
-
-.lesson-list a {
-    display: block;
+.video-container {
+    flex: 3;
     padding: 10px;
-    background: #f1f1f1;
-    color: #333;
-    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.lesson-list a:hover {
-    background: #ddd;
-}
-
-.video-player {
-    width: 75%;
-    padding: 20px;
-}
-
-#course-video {
+.video-container video {
     width: 100%;
-    height: 30%;
+    height: auto;
+    max-height: 100%; /* Đảm bảo video không vượt quá chiều cao màn hình */
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+    flex: 1;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-left: 2px solid #ddd;
+    position: relative;
+    transition: transform 0.3s ease;
+    transform: translateX(0);
+    overflow-y: auto;
+}
+
+.sidebar.hidden {
+    transform: translateX(100%); /* Ẩn thanh bên phải */
+}
+
+.sidebar-toggle {
+    position: absolute;
+    top: 50%;
+    left: -30px; /* Điều chỉnh vị trí nút ra ngoài để nó không bị ẩn */
+    transform: translateY(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 20px; /* Tăng kích thước chữ để dễ nhìn hơn */
+    transition: background-color 0.3s ease;
+    z-index: 1000; /* Đảm bảo nút này nằm trên các phần tử khác */
+}
+
+.sidebar-toggle:hover {
+    background-color: #555;
+}
+
+
+.sections {
+    margin-top: 50px; /* Để trống không gian cho nút ẩn/hiện */
 }

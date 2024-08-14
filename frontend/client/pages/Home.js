@@ -1,7 +1,7 @@
 export class Home {
     async render(parent) {
         parent.innerHTML = `
-            <main style="height: 5000px">
+            <main style="height: 2000px">
                 <div class="hero">
                     <div class="main-content">
                         <div class="body">
